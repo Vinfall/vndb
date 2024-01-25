@@ -1,0 +1,7 @@
+# Virtual environment
+venv
+virtualenv
+__pycache__/*
+# CSV
+vndb*.csv
+!example/*.csv
