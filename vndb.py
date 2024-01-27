@@ -27,7 +27,7 @@ _TO_REPLACE_DEV = (
     ("アージュ", "age"),
     ("アリスソフト", "AliceSoft"),
     ("あっぷりけ", "Applique"),
-    ("ブルゲLIGHT", "Blue Gale Light"),
+    ("アークシステムワークス株式会社", "Arc System Works"),
     ("きゃべつそふと", "Cabbage Soft"),
     ("株式会社ガイナックス", "Gainax"),
     ("キッド", "KID"),
@@ -46,6 +46,9 @@ _TO_REPLACE_DEV = (
     ("ニトロプラス", "Nitro+"),
     ("パープルソフトウェア", "Purple"),
     ("Juzi Ban", "橘子班"),
+    # Imprint
+    ("ブルゲLIGHT", "Blue Gale"),
+    ("MOONSTONE Cherry", "MOONSTONE"),
 )
 
 
