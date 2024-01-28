@@ -5,3 +5,6 @@ __pycache__/*
 # CSV
 vndb*.csv
 !example/*.csv
+# Plot
+output/*.png
+output/*.pdf
