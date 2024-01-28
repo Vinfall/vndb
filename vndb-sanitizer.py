@@ -126,7 +126,6 @@ if len(file_list) > 0:
     df = pd.read_csv(filepath)
     new_file_name = filepath.replace("vndb-list-export-", "vndb-list-sanitized-")
 else:
-    # TODO: point to userscript repo
     print(
         "VNDB list CSV not found.\nPlease install VNDB User List Exporter and export first.\nYou can get it from https://github.com/Vinfall/UserScripts#list."
     )
