@@ -1,5 +1,7 @@
 library(readr)
 library(dplyr)
+library(tidyr)
+library(stringr)
 library(ggplot2)
 
 # Get all files matching the pattern
@@ -45,4 +47,45 @@ vote_rating_regression <- function(data) {
   )
 }
 
+vote_length_regression <- function(data) {
+  # Convert Length string into float
+  data <- data %>%
+    mutate(
+      # Match strings like "12h34m"
+      Hours = as.numeric(str_extract(Length, "\\d+(?=h)")),
+      Minutes = as.numeric(str_extract(Length, "\\d+(?=m)")),
+      # Replace NA w/ 0
+      Hours = replace_na(Hours, 0),
+      Minutes = replace_na(Minutes, 0),
+      # Add up minutes & hours
+      TotalMinutes = Hours * 60 + Minutes
+    ) %>%
+    select(-Hours, -Minutes, TotalMinutes)
+
+  # Filter finished VNs w/ real length (instead of guessed one)
+  # Check "_TO_REPLACE_LEN" in `vndb-sanitizer.py`
+  filtered_data <- filter(data, Labels == "Finished" & Vote != 0 & LengthDP != -1) # nolint
+
+  # Perform linear regression
+  relation <- lm(Vote ~ TotalMinutes, data = filtered_data)
+
+  # Display summary of the linear regression model
+  print((summary(relation)))
+
+  plot <- ggplot(filtered_data, aes(x = TotalMinutes, y = Vote)) + # nolint
+    # Add scatter plot points
+    geom_point() +
+    # Add w/o confidence interval
+    geom_smooth(
+      method = "lm", se = FALSE, color = "yellow"
+    ) +
+    labs(title = "Length x Vote Regression", x = "Length", y = "Vote")
+
+  # Save plot
+  ggsave("output/regression-vote-length.png", plot,
+    width = 8, height = 6, units = "in", dpi = 300
+  )
+}
+
 vote_rating_regression(data)
+vote_length_regression(data)
