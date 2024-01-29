@@ -24,17 +24,27 @@ vote_rating_regression <- function(data) {
   relation <- lm(Vote ~ Rating, data = filtered_data)
 
   # Display summary of the linear regression model
-  print((summary(relation)))
+  # print((summary(relation)))
 
   # Generate a scatter plot with regression line
   plot <- ggplot(filtered_data, aes(x = Rating, y = Vote)) + # nolint
     # Add scatter plot points
-    geom_point() +
+    geom_point(alpha = 0.7, size = 1.0, shape = 21, stroke = 1) +
     # Add w/o confidence interval
     geom_smooth(
       method = "auto", se = FALSE, color = "blue"
     ) +
-    labs(title = "Rating x Vote Regression", x = "Rating", y = "Vote")
+    geom_hline(
+      yintercept = 4,
+      linewidth = 1, linetype = "dotted", color = "black"
+    ) +
+    geom_vline(
+      xintercept = 9,
+      linewidth = 1, linetype = "dotted", color = "black"
+    ) +
+    labs(title = "Rating x Vote Regression", x = "Rating", y = "Vote") +
+    coord_cartesian(xlim = c(5, 9), ylim = c(4, 10)) +
+    theme_linedraw()
 
   # Save plot
   ggsave("output/regression-vote-rating.png", plot,
@@ -65,16 +75,26 @@ vote_length_regression <- function(data) {
   relation <- lm(Vote ~ TotalMinutes, data = filtered_data)
 
   # Display summary of the linear regression model
-  print((summary(relation)))
+  # print((summary(relation)))
 
   plot <- ggplot(filtered_data, aes(x = TotalMinutes, y = Vote)) + # nolint
     # Add scatter plot points
-    geom_point() +
+    geom_point(alpha = 0.7, size = 1.0, shape = 21, stroke = 1) +
     # Add w/o confidence interval
     geom_smooth(
       method = "auto", se = FALSE, color = "yellow"
     ) +
-    labs(title = "Length x Vote Regression", x = "Length", y = "Vote")
+    geom_hline(
+      yintercept = 4,
+      linewidth = 1, linetype = "dotted", color = "black"
+    ) +
+    geom_vline(
+      xintercept = 5000,
+      linewidth = 1, linetype = "dotted", color = "black"
+    ) +
+    labs(title = "Length x Vote Regression", x = "Length", y = "Vote") +
+    coord_cartesian(xlim = c(0, 5000), ylim = c(4, 10)) +
+    theme_linedraw()
 
   # Save plot
   ggsave("output/regression-vote-length.png", plot,
