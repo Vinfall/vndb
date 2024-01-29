@@ -27,7 +27,7 @@ pip install -r requirements.txt
 install.packages("tidyverse")
 ```
 
-2. Now run the sanitizer and plot generater:
+2. Now run the sanitizer and plot generator:
 
 ```sh
 python ./vndb-sanitizer.py
