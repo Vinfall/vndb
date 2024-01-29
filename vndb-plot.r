@@ -27,17 +27,12 @@ vote_rating_regression <- function(data) {
   print((summary(relation)))
 
   # Generate a scatter plot with regression line
-  ggplot(filtered_data, aes(x = Rating, y = Vote)) + # nolint
-    geom_point() + # Add scatter plot points
-    geom_smooth(method = "lm", se = FALSE) + # Add w/o confidence interval
-    labs(title = "Rating x Vote Regression", x = "Rating", y = "Vote")
-
   plot <- ggplot(filtered_data, aes(x = Rating, y = Vote)) + # nolint
     # Add scatter plot points
     geom_point() +
     # Add w/o confidence interval
     geom_smooth(
-      method = "lm", se = FALSE, color = "blue"
+      method = "auto", se = FALSE, color = "blue"
     ) +
     labs(title = "Rating x Vote Regression", x = "Rating", y = "Vote")
 
@@ -77,7 +72,7 @@ vote_length_regression <- function(data) {
     geom_point() +
     # Add w/o confidence interval
     geom_smooth(
-      method = "lm", se = FALSE, color = "yellow"
+      method = "auto", se = FALSE, color = "yellow"
     ) +
     labs(title = "Length x Vote Regression", x = "Length", y = "Vote")
 
