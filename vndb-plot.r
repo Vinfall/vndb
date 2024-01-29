@@ -3,6 +3,7 @@ library(dplyr)
 library(tidyr)
 library(stringr)
 library(ggplot2)
+library(scales)
 
 # Get all files matching the pattern
 files <- list.files(pattern = "vndb-list-sanitized-.*\\.csv")
@@ -102,5 +103,40 @@ vote_length_regression <- function(data) {
   )
 }
 
-vote_rating_regression(data)
-vote_length_regression(data)
+header_bar <- function(data, label) {
+  label_var <- ensym(label)
+  label_str <- as.character(label_var)
+
+  # Count the frequency of each Labels and arrange in descending order
+  label_counts <- data %>%
+    count(!!label_var) %>%
+    arrange(desc(n))
+
+  bar <- ggplot(data = label_counts) +
+    geom_bar(mapping = aes(
+      x = reorder(!!label_var, -n), y = n, fill = as.factor(!!label_var)
+    ), stat = "identity", show.legend = FALSE, width = 1) +
+    theme(aspect.ratio = 1) +
+    scale_fill_brewer() +
+    labs(x = NULL, y = NULL)
+
+  # Flip x and y
+  bar1 <- bar + coord_flip()
+  # Polar
+  bar2 <- bar + coord_polar()
+  plots <- list(bar1, bar2)
+
+  filename <- paste("output/", label_str, "-bar.png", sep = "")
+  ggsave(filename,
+    gridExtra::grid.arrange(grobs = plots, ncol = 2),
+    width = 10, height = 5, units = "in", dpi = 300
+  )
+}
+
+# vote_rating_regression(data)
+# vote_length_regression(data)
+
+header_bar(data, "Labels")
+# Be careful, these would throw alota of warnings
+# header_bar(data, "Vote")
+# header_bar(data, "Developer")
