@@ -163,8 +163,11 @@ weekly_vn_heatmap <- function(data) {
       # colors = c("#196127", "#239a3b", "#7bc96f", "#c6e48b", "#ebedf0"),
       # GitHub Style
       colors = c("#ebedf0", "#c6e48b", "#7bc96f", "#239a3b", "#196127"),
-      values = scales::rescale(c(0, 0.1, 0.5, 0.9, 1)),
-      name = "Weekly Count"
+      # Default scale
+      # values = scales::rescale(c(0, 0.1, 0.5, 0.9, 1)),
+      # My preferred scale, as 10 VNs per week is rarely achieved, 4 is enough
+      values = scales::rescale(c(0, 0.1, 0.2, 0.4, 1)),
+      name = "Count"
     ) +
     # minimal theme looks weird
     theme_light() +
