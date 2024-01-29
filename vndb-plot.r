@@ -3,6 +3,7 @@ library(dplyr)
 library(tidyr)
 library(stringr)
 library(ggplot2)
+library(gridExtra)
 library(lubridate)
 
 # Get all files matching the pattern
@@ -16,11 +17,6 @@ if (length(files) == 0) {
 
 # Read the first matching file into a data frame with UTF-8 encoding
 data <- read_csv(files[1], locale = locale(encoding = "UTF-8"))
-
-# Convert these columns to date strings
-data$`Start date` <- as.Date(data$`Start date`)
-data$`Finish date` <- as.Date(data$`Finish date`)
-data$`Release date` <- as.Date(data$`Release date`)
 
 vote_rating_regression <- function(data) {
   # Filter finished VNs w/ vote stats
@@ -139,31 +135,57 @@ header_bar <- function(data, label) {
 }
 
 weekly_vn_heatmap <- function(data) {
-  # Filter finished VNs w/ vote stats
-  finished_data <- filter(data, Labels == "Finished") # nolint
+  # Filter finished VNs w/ finish date
+  finished_data <- filter(data, Labels == "Finished" & !is.null(`Finish date`)) # nolint
   # Ascending sort by Start Date and Finish Date
-  finished_data <- finished_data %>% arrange(`Start date`, `Finish date`)
+  finished_data <- finished_data[
+    order(finished_data$`Start date`, finished_data$`Finish date`),
+  ]
 
-  # Count weekly finished VNs
-  finished_data <- finished_data %>%
-    mutate(week = week(`Start date`)) %>%
-    group_by(week) %>%
-    summarise(finished_count = n())
+  # Split into year & week
+  finished_data$year <- year(as.Date(finished_data$`Start date`))
+  finished_data$week <- isoweek(as.Date(finished_data$`Start date`))
 
-  # Generate heatmap
-  plot <- ggplot(finished_data, aes(x = week, y = 1, fill = finished_count)) + # nolint
-    geom_tile() +
+  # Counted weekly VNs, devided by year
+  weekly_counts_by_year <- finished_data %>%
+    group_by(year, week) %>%
+    summarise(count = n(), .groups = "drop")
+
+  # Generate heatmap for every year
+  heatmap <- ggplot(
+    # Omit NA year
+    weekly_counts_by_year %>% filter(!is.na(year)),
+    aes(x = week, y = factor(year))
+  ) +
+    geom_tile(aes(fill = count), color = "white") +
     scale_fill_gradientn(
-      colors = c("#196127", "#239a3b", "#7bc96f", "#c6e48b", "#ebedf0"),
-      values = scales::rescale(c(0, 0.1, 0.5, 0.9, 1)), name = "Finished Count"
+      # GitHub Style, reverted, misleading but more beautiful
+      # colors = c("#196127", "#239a3b", "#7bc96f", "#c6e48b", "#ebedf0"),
+      # GitHub Style
+      colors = c("#ebedf0", "#c6e48b", "#7bc96f", "#239a3b", "#196127"),
+      values = scales::rescale(c(0, 0.1, 0.5, 0.9, 1)),
+      name = "Weekly Count"
     ) +
+    # minimal theme looks weird
     theme_light() +
-    labs(title = "Weekly VN Count", x = "Week", y = "") +
-    theme(axis.text.y = element_blank(), axis.ticks.y = element_blank())
+    theme(
+      axis.title.y = element_blank(),
+      axis.text.y = element_text(angle = 0),
+      axis.ticks.y = element_blank(),
+      panel.grid.major = element_blank(),
+      panel.grid.minor = element_blank(),
+      strip.background = element_blank(),
+      strip.text.y = element_text(angle = 0)
+    ) +
+    labs(
+      title = "Weekly VN Heatmap",
+      x = "Week", y = "Year", fill = "Count"
+    )
 
   # Save plot
-  ggsave("output/heatmap-weekly-vn.png", plot,
-    width = 8, height = 8, units = "in", dpi = 300
+  ggsave("output/heatmap-weekly-vn.png",
+    plot = heatmap,
+    width = 10, height = 5, units = "in", dpi = 300
   )
 }
 
