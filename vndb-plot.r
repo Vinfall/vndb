@@ -56,11 +56,13 @@ temporal_stat <- function(data) {
   )
 
   # Calculate vote "confidence index"
+  # Based on dumb average & MY faulty assumption
+  # Ranking algorithm is hard
   # TODO: add hyperlink to explanation on my blog once published
   data <- data %>%
     mutate(
       confidence_index = cut(RatingDP,
-        # Break data into several groups solely based on my assumption
+        # Break data into several groups
         breaks = c(0, 32, 128, 500, 1200, 3000, 6000, 20000),
         include.lowest = TRUE
       ),
