@@ -121,7 +121,10 @@ temporal_stat <- function(data) {
       # Grouped by month
       date_breaks = "1 month", date_labels = "%Y-%m"
     ) +
-    labs(title = "Vote/Rating over Time with Confidence Index", x = "Date", y = "Value") +
+    labs(
+      title = "Vote/Rating over Time with Confidence Index",
+      x = "Date", y = "Value"
+    ) +
     # Rotate label so that it can be shown
     theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
     # Set colors the right way
@@ -183,6 +186,8 @@ stat_correlogram <- function(data) {
   numeric_data <- filtered_data[
     , c("Vote", "Rating", "RatingDP", "TotalMinutes", "LengthDP")
   ]
+  # Use natural language in favor of buzzword
+  colnames(numeric_data)[colnames(numeric_data) == "TotalMinutes"] <- "Length"
   cor_matrix <- cor(numeric_data, use = "complete.obs")
 
   # Generate correlation matrix
@@ -321,10 +326,10 @@ weekly_vn_heatmap <- function(data) {
   )
 }
 
-temporal_stat(data)
+# temporal_stat(data)
 # vote_rating_regression(data)
 # vote_length_regression(data)
-# stat_correlogram(data)
+stat_correlogram(data)
 
 # header_bar(data, "Labels")
 # Be careful, these would throw alota of warnings
