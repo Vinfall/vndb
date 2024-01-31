@@ -43,6 +43,8 @@ data$`Finish date` <- as.Date(data$`Finish date`)
 data$`Release date` <- as.Date(data$`Release date`)
 
 temporal_stat <- function(data) {
+  # Filter VNs w/ vote stats
+  data <- filter(data, Vote != 0)
   # Sort data ascendingly
   data <- arrange(
     data,
@@ -51,7 +53,6 @@ temporal_stat <- function(data) {
 
   # Generate plot
   p1 <- ggplot() +
-    # Excel style
     # Vote
     geom_line(data = data, aes(
       x = `Start date`, y = Vote,
@@ -59,6 +60,7 @@ temporal_stat <- function(data) {
     )) +
     geom_point(
       data = data, aes(x = `Start date`, y = Vote),
+      # Excel style
       color = "#4472c4"
     ) +
     # Rating
