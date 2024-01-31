@@ -57,28 +57,43 @@ vote_rating_regression <- function(data) {
   )
 }
 
-vote_rating_correlogram <- function(data) {
-  # Filter finished VNs w/ vote stats
-  filtered_data <- filter(data, Labels == "Finished" & Vote != 0 & Rating != 0) # nolint
+stat_correlogram <- function(data) {
+  # Convert grades to numeric
+  data$Vote <- as.numeric(data$Vote)
+  data$Rating <- as.numeric(data$Rating)
+  # Convert Length string into float
+  data <- data %>%
+    mutate(
+      # Match strings like "12h34m"
+      Hours = as.numeric(str_extract(Length, "\\d+(?=h)")),
+      Minutes = as.numeric(str_extract(Length, "\\d+(?=m)")),
+      # Replace NA w/ 0
+      Hours = replace_na(Hours, 0),
+      Minutes = replace_na(Minutes, 0),
+      # Add up minutes & hours
+      TotalMinutes = Hours * 60 + Minutes
+    ) %>%
+    select(-Hours, -Minutes, TotalMinutes)
 
-  # Convert to numeric type
-  filtered_data$Vote <- as.numeric(filtered_data$Vote)
-  filtered_data$Rating <- as.numeric(filtered_data$Rating)
+  # Filter finished VNs w/ vote stats
+  filtered_data <- filter(data, Labels == "Finished" & Vote != 0 & Rating != 0 & Length != 0) # nolint
 
   # Correlate
-  numeric_data <- filtered_data[, c("Vote", "Rating", "RatingDP")]
+  numeric_data <- filtered_data[
+    , c("Vote", "Rating", "RatingDP", "TotalMinutes", "LengthDP")
+  ]
   cor_matrix <- cor(numeric_data, use = "complete.obs")
 
   # Generate correlation matrix
-  png(filename = "output/corrplot-vote-rating-number.png")
+  png(filename = "output/corrplot-stat.png")
   corrplot(cor_matrix,
     method = "circle"
-    # title = "Vote x Rating Correlation Matrix",
+    # title = "Stat Correlation Matrix",
   )
   dev.off()
   # TODO1: sharpen output image and make title fully visible
   # TODO2: use ggplot instead of corrplot
-  # ggsave("output/corrplot-vote-rating-number.png", plot = replayPlot(p1), width = 8, height = 7, units = "in", dpi = 300 ) # nolint
+  # ggsave("output/corrplot-stat.png", plot = replayPlot(p1), width = 8, height = 7, units = "in", dpi = 300 ) # nolint
 }
 
 vote_length_regression <- function(data) {
@@ -221,7 +236,7 @@ weekly_vn_heatmap <- function(data) {
 
 # vote_rating_regression(data)
 # vote_length_regression(data)
-vote_rating_correlogram(data)
+stat_correlogram(data)
 
 # header_bar(data, "Labels")
 # Be careful, these would throw alota of warnings
