@@ -21,6 +21,27 @@ if (length(files) == 0) {
 # Read the first matching file into a data frame with UTF-8 encoding
 data <- read_csv(files[1], locale = locale(encoding = "UTF-8"))
 
+# Convert grades to numeric
+data$Vote <- as.numeric(data$Vote)
+data$Rating <- as.numeric(data$Rating)
+# Convert Length string into float
+data <- data %>%
+  mutate(
+    # Match strings like "12h34m"
+    Hours = as.numeric(str_extract(Length, "\\d+(?=h)")),
+    Minutes = as.numeric(str_extract(Length, "\\d+(?=m)")),
+    # Replace NA w/ 0
+    Hours = replace_na(Hours, 0),
+    Minutes = replace_na(Minutes, 0),
+    # Add up minutes & hours
+    TotalMinutes = Hours * 60 + Minutes
+  ) %>%
+  select(-Hours, -Minutes, TotalMinutes)
+# Convert dates
+data$`Start date` <- as.Date(data$`Start date`)
+data$`Finish date` <- as.Date(data$`Finish date`)
+data$`Release date` <- as.Date(data$`Release date`)
+
 vote_rating_regression <- function(data) {
   # Filter finished VNs w/ vote stats
   filtered_data <- filter(data, Labels == "Finished" & Vote != 0 & Rating != 0) # nolint
@@ -58,23 +79,6 @@ vote_rating_regression <- function(data) {
 }
 
 stat_correlogram <- function(data) {
-  # Convert grades to numeric
-  data$Vote <- as.numeric(data$Vote)
-  data$Rating <- as.numeric(data$Rating)
-  # Convert Length string into float
-  data <- data %>%
-    mutate(
-      # Match strings like "12h34m"
-      Hours = as.numeric(str_extract(Length, "\\d+(?=h)")),
-      Minutes = as.numeric(str_extract(Length, "\\d+(?=m)")),
-      # Replace NA w/ 0
-      Hours = replace_na(Hours, 0),
-      Minutes = replace_na(Minutes, 0),
-      # Add up minutes & hours
-      TotalMinutes = Hours * 60 + Minutes
-    ) %>%
-    select(-Hours, -Minutes, TotalMinutes)
-
   # Filter finished VNs w/ vote stats
   filtered_data <- filter(data, Labels == "Finished" & Vote != 0 & Rating != 0 & Length != 0) # nolint
 
@@ -97,20 +101,6 @@ stat_correlogram <- function(data) {
 }
 
 vote_length_regression <- function(data) {
-  # Convert Length string into float
-  data <- data %>%
-    mutate(
-      # Match strings like "12h34m"
-      Hours = as.numeric(str_extract(Length, "\\d+(?=h)")),
-      Minutes = as.numeric(str_extract(Length, "\\d+(?=m)")),
-      # Replace NA w/ 0
-      Hours = replace_na(Hours, 0),
-      Minutes = replace_na(Minutes, 0),
-      # Add up minutes & hours
-      TotalMinutes = Hours * 60 + Minutes
-    ) %>%
-    select(-Hours, -Minutes, TotalMinutes)
-
   # Filter finished VNs w/ real length (instead of guessed one)
   # Check "_TO_REPLACE_LEN" in `vndb-sanitizer.py`
   filtered_data <- filter(data, Labels == "Finished" & Vote != 0 & LengthDP != -1) # nolint
@@ -185,8 +175,8 @@ weekly_vn_heatmap <- function(data) {
   ]
 
   # Split into year & week
-  finished_data$year <- year(as.Date(finished_data$`Start date`))
-  finished_data$week <- isoweek(as.Date(finished_data$`Start date`))
+  finished_data$year <- year(finished_data$`Start date`)
+  finished_data$week <- isoweek(finished_data$`Start date`)
 
   # Counted weekly VNs, devided by year
   weekly_counts_by_year <- finished_data %>%
