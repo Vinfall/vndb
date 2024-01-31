@@ -1,3 +1,4 @@
+# Tidyverse
 library(readr)
 library(dplyr)
 library(tidyr)
@@ -5,6 +6,8 @@ library(stringr)
 library(ggplot2)
 library(gridExtra)
 library(lubridate)
+# Miscellaneous
+library(corrplot)
 
 # Get all files matching the pattern
 files <- list.files(pattern = "vndb-list-sanitized-.*\\.csv")
@@ -52,6 +55,30 @@ vote_rating_regression <- function(data) {
   ggsave("output/regression-vote-rating.png", plot,
     width = 8, height = 6, units = "in", dpi = 300
   )
+}
+
+vote_rating_correlogram <- function(data) {
+  # Filter finished VNs w/ vote stats
+  filtered_data <- filter(data, Labels == "Finished" & Vote != 0 & Rating != 0) # nolint
+
+  # Convert to numeric type
+  filtered_data$Vote <- as.numeric(filtered_data$Vote)
+  filtered_data$Rating <- as.numeric(filtered_data$Rating)
+
+  # Correlate
+  numeric_data <- filtered_data[, c("Vote", "Rating", "RatingDP")]
+  cor_matrix <- cor(numeric_data, use = "complete.obs")
+
+  # Generate correlation matrix
+  png(filename = "output/corrplot-vote-rating-number.png")
+  corrplot(cor_matrix,
+    method = "circle"
+    # title = "Vote x Rating Correlation Matrix",
+  )
+  dev.off()
+  # TODO1: sharpen output image and make title fully visible
+  # TODO2: use ggplot instead of corrplot
+  # ggsave("output/corrplot-vote-rating-number.png", plot = replayPlot(p1), width = 8, height = 7, units = "in", dpi = 300 ) # nolint
 }
 
 vote_length_regression <- function(data) {
@@ -192,13 +219,13 @@ weekly_vn_heatmap <- function(data) {
   )
 }
 
-
 # vote_rating_regression(data)
 # vote_length_regression(data)
+vote_rating_correlogram(data)
 
 # header_bar(data, "Labels")
 # Be careful, these would throw alota of warnings
 # header_bar(data, "Vote")
 # header_bar(data, "Developer")
 
-weekly_vn_heatmap(data)
+# weekly_vn_heatmap(data)
