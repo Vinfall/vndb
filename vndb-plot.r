@@ -19,7 +19,11 @@ if (length(files) == 0) {
 }
 
 # Read the first matching file into a data frame with UTF-8 encoding
-data <- read_csv(files[1], locale = locale(encoding = "UTF-8"))
+data <- read_csv(files[1],
+  locale = locale(encoding = "UTF-8"),
+  # Avoid excessive output
+  show_col_types = FALSE
+)
 
 # Convert score to numeric
 data$Vote <- as.numeric(data$Vote)
@@ -51,6 +55,22 @@ temporal_stat <- function(data) {
     data$`Start date`, data$`Finish date`, data$`Release date`
   )
 
+  # Calculate vote "confidence index"
+  # TODO: add hyperlink to explanation on my blog once published
+  data <- data %>%
+    mutate(
+      confidence_index = cut(RatingDP,
+        # Break data into several groups solely based on my assumption
+        breaks = c(0, 32, 128, 500, 1200, 3000, 6000, 20000),
+        include.lowest = TRUE
+      ),
+      # Use the exponent of e as base
+      Base = exp(1)^as.numeric(confidence_index),
+      # Define limits
+      ymin = Rating - log(Base),
+      ymax = Rating + log(Base)
+    )
+
   # Generate plot
   p1 <- ggplot() +
     # Vote
@@ -63,6 +83,16 @@ temporal_stat <- function(data) {
       # Excel style
       color = "#4472c4"
     ) +
+    # Add confidence index (NOT that CI aka. confidence intervals)
+    geom_ribbon(
+      data = data, aes(
+        x = `Start date`,
+        ymin = ymin, ymax = ymax,
+        fill = "Confidence Index"
+      ),
+      alpha = 0.3
+    ) +
+
     # Rating
     geom_line(data = subset(data, Rating != 0), aes(
       x = `Start date`, y = Rating,
@@ -74,6 +104,7 @@ temporal_stat <- function(data) {
       data = data, aes(x = `Start date`, y = Rating),
       color = "#f8766d"
     ) +
+
     # Minimum score line
     geom_hline(
       yintercept = 4,
@@ -90,9 +121,16 @@ temporal_stat <- function(data) {
       # Grouped by month
       date_breaks = "1 month", date_labels = "%Y-%m"
     ) +
-    labs(title = "Vote/Rating over Time", x = "Date", y = "Value") +
+    labs(title = "Vote/Rating over Time with Confidence Index", x = "Date", y = "Value") +
     # Rotate label so that it can be shown
-    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+    theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+    # Set colors the right way
+    scale_fill_manual(values = "lightblue") +
+    scale_color_manual(values = c(
+      "Vote" = "#4472c4",
+      "Rating" = "#f8766d"
+    ))
+
 
   # Save plot
   ggsave("output/temporal-stat.png",
