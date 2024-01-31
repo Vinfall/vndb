@@ -21,7 +21,7 @@ if (length(files) == 0) {
 # Read the first matching file into a data frame with UTF-8 encoding
 data <- read_csv(files[1],
   locale = locale(encoding = "UTF-8"),
-  # Avoid excessive output
+  # Surpress excessive output
   show_col_types = FALSE
 )
 
@@ -184,23 +184,33 @@ stat_correlogram <- function(data) {
   # Filter finished VNs w/ vote stats
   filtered_data <- filter(data, Labels == "Finished" & Vote != 0 & Rating != 0 & Length != 0) # nolint
 
+  # Convert dates to numeric values
+  filtered_data$`Start date` <- as.numeric(filtered_data$`Start date`)
+  filtered_data$`Finish date` <- as.numeric(filtered_data$`Finish date`)
+  filtered_data$`Release date` <- as.numeric(filtered_data$`Release date`)
   # Correlate
   numeric_data <- filtered_data[
-    , c("Vote", "Rating", "RatingDP", "TotalMinutes", "LengthDP")
+    , c(
+      "Vote", "Rating", "RatingDP", "TotalMinutes", "LengthDP",
+      "Start date", "Finish date", "Release date"
+    )
   ]
   # Use natural language in favor of buzzword
   colnames(numeric_data)[colnames(numeric_data) == "TotalMinutes"] <- "Length"
   cor_matrix <- cor(numeric_data, use = "complete.obs")
 
   # Generate correlation matrix
-  png(filename = "output/corrplot-stat.png")
-  corrplot(cor_matrix,
-    method = "circle"
-    # title = "Stat Correlation Matrix",
+  png(
+    filename = "output/corrplot-stat.png",
+    width = 10, height = 10, units = "in", res = 300
   )
+  # Set resolution
+  par(mar = c(1, 1, 1, 1), mfrow = c(1, 1), cex = 1.2, pin = c(5, 5))
+  corrplot(cor_matrix, method = "circle")
+  # Move down title so it would not be trimmed
+  title("Stat Correlation Matrix", line = -1)
   dev.off()
-  # TODO1: sharpen output image and make title fully visible
-  # TODO2: use ggplot instead of corrplot
+  # TODO: use ggplot instead of corrplot
   # ggsave("output/corrplot-stat.png", plot = replayPlot(p1), width = 8, height = 7, units = "in", dpi = 300 ) # nolint
 }
 
