@@ -21,7 +21,7 @@ if (length(files) == 0) {
 # Read the first matching file into a data frame with UTF-8 encoding
 data <- read_csv(files[1], locale = locale(encoding = "UTF-8"))
 
-# Convert grades to numeric
+# Convert score to numeric
 data$Vote <- as.numeric(data$Vote)
 data$Rating <- as.numeric(data$Rating)
 # Convert Length string into float
@@ -41,6 +41,45 @@ data <- data %>%
 data$`Start date` <- as.Date(data$`Start date`)
 data$`Finish date` <- as.Date(data$`Finish date`)
 data$`Release date` <- as.Date(data$`Release date`)
+
+temporal_stat <- function(data) {
+  # Sort data ascendingly
+  data <- arrange(
+    data,
+    data$`Start date`, data$`Finish date`, data$`Release date`
+  )
+
+  # Generate plot
+  p1 <- ggplot(data, aes(x = `Start date`, y = Vote, group = 1)) +
+    # Excel style
+    geom_line(color = "#4472c4") +
+    geom_point(color = "#4472c4") +
+    # Minimum score line
+    geom_hline(
+      yintercept = 4,
+      linewidth = 1, linetype = "dotted", color = "black"
+    ) +
+    # Vertical starting line
+    geom_vline(
+      xintercept = as.numeric(as.Date("2020-11-24")),
+      linewidth = 1, linetype = "dotted", color = "black"
+    ) +
+    scale_x_date(
+      # Ignore data before a certain date
+      limits = as.Date(c("2020-11-01", max(data$`Start date`))),
+      # Grouped by month
+      date_breaks = "1 month", date_labels = "%Y-%m"
+    ) +
+    labs(title = "Vote over Time", x = "Date", y = "Vote") +
+    # Rotate label so that it can be shown
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+  # Save plot
+  ggsave("output/temporal-vote.png",
+    plot = p1,
+    width = 16, height = 5, units = "in", dpi = 300
+  )
+}
 
 vote_rating_regression <- function(data) {
   # Filter finished VNs w/ vote stats
@@ -224,9 +263,10 @@ weekly_vn_heatmap <- function(data) {
   )
 }
 
+temporal_stat(data)
 # vote_rating_regression(data)
 # vote_length_regression(data)
-stat_correlogram(data)
+# stat_correlogram(data)
 
 # header_bar(data, "Labels")
 # Be careful, these would throw alota of warnings
