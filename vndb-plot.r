@@ -67,6 +67,7 @@ temporal_stat <- function(data) {
       group = 1, color = "Rating"
     )) +
     # Only fill if not zero
+    # TODO: connect vote line even if rating is zero
     geom_point(
       data = data, aes(x = `Start date`, y = Rating),
       color = "#f8766d"
