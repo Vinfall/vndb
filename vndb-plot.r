@@ -50,10 +50,27 @@ temporal_stat <- function(data) {
   )
 
   # Generate plot
-  p1 <- ggplot(data, aes(x = `Start date`, y = Vote, group = 1)) +
+  p1 <- ggplot() +
     # Excel style
-    geom_line(color = "#4472c4") +
-    geom_point(color = "#4472c4") +
+    # Vote
+    geom_line(data = data, aes(
+      x = `Start date`, y = Vote,
+      group = 1, color = "Vote"
+    )) +
+    geom_point(
+      data = data, aes(x = `Start date`, y = Vote),
+      color = "#4472c4"
+    ) +
+    # Rating
+    geom_line(data = subset(data, Rating != 0), aes(
+      x = `Start date`, y = Rating,
+      group = 1, color = "Rating"
+    )) +
+    # Only fill if not zero
+    geom_point(
+      data = data, aes(x = `Start date`, y = Rating),
+      color = "#f8766d"
+    ) +
     # Minimum score line
     geom_hline(
       yintercept = 4,
@@ -70,14 +87,14 @@ temporal_stat <- function(data) {
       # Grouped by month
       date_breaks = "1 month", date_labels = "%Y-%m"
     ) +
-    labs(title = "Vote over Time", x = "Date", y = "Vote") +
+    labs(title = "Vote/Rating over Time", x = "Date", y = "Value") +
     # Rotate label so that it can be shown
     theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
   # Save plot
-  ggsave("output/temporal-vote.png",
+  ggsave("output/temporal-stat.png",
     plot = p1,
-    width = 16, height = 5, units = "in", dpi = 300
+    width = 20, height = 5, units = "in", dpi = 300
   )
 }
 
