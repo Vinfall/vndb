@@ -1,6 +1,6 @@
 ## Intro
 
-VNDB, for acronym for *VNDB Novel Data Breakup*.
+VNDB, is an acronym of *VNDB Novel Data Breakup*, which is also the abbreviation of *Visual Novel DataBase*.
 
 It has the companion scripts for [VNDB User List Exporter](https://github.com/Vinfall/UserScripts#list)
 for my personal use.
