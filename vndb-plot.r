@@ -28,19 +28,21 @@ data <- read_csv(files[1],
 # Convert score to numeric
 data$Vote <- as.numeric(data$Vote)
 data$Rating <- as.numeric(data$Rating)
-# Convert Length string into float
+# Convert Length string like 12:34 (hh:mm) into float
 data <- data %>%
   mutate(
-    # Match strings like "12h34m"
-    Hours = as.numeric(str_extract(Length, "\\d+(?=h)")),
-    Minutes = as.numeric(str_extract(Length, "\\d+(?=m)")),
+    # Split the string by ":"
+    TimeSplit = str_split(Length, ":"),
+    # Extract hours and minutes
+    Hours = as.numeric(sapply(TimeSplit, function(x) x[1])),
+    Minutes = as.numeric(sapply(TimeSplit, function(x) x[2])),
     # Replace NA w/ 0
     Hours = replace_na(Hours, 0),
     Minutes = replace_na(Minutes, 0),
     # Add up minutes & hours
     TotalMinutes = Hours * 60 + Minutes
   ) %>%
-  select(-Hours, -Minutes, TotalMinutes)
+  select(-TimeSplit, -Hours, -Minutes, TotalMinutes)
 # Convert dates
 data$`Start date` <- as.Date(data$`Start date`)
 data$`Finish date` <- as.Date(data$`Finish date`)
@@ -340,8 +342,8 @@ weekly_vn_heatmap <- function(data) {
 
 # temporal_stat(data)
 # vote_rating_regression(data)
-# vote_length_regression(data)
-stat_correlogram(data)
+vote_length_regression(data)
+# stat_correlogram(data)
 
 # header_bar(data, "Labels")
 # Be careful, these would throw alota of warnings
