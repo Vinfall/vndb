@@ -31,10 +31,11 @@ install.packages("corrplot")
 
 ```sh
 python ./vndb-sanitizer.py
+python ./vndb-barchartrace.py
 Rscript ./vndb-plot.r
 ```
 
-3. Check `output` for the ugly (toldya) plots
+3. Check `output` or console log for the ugly (toldya) plots.
 
 ## [License](LICENSE)
 
