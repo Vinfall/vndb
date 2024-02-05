@@ -53,23 +53,38 @@ _TO_REPLACE_DEV = (
 
 
 def replace_length(row):
-    if row["LengthDP"] in _TO_REPLACE_LEN:
+    if "LengthDP" in row.index and row["LengthDP"] in _TO_REPLACE_LEN:
         row["Length"] = _TO_REPLACE_LEN[row["LengthDP"]]
         row["LengthDP"] = 0
     return row
 
 
-# Make already nicely exported CSV more awesome
-def sanitized_dataframe(df):
-    # Split df["Rating"] into df["Rating"] and df["RatingDP"]
-    df[["Rating", "RatingDP"]] = df["Rating"].str.extract(r"(\d+\.\d+)\s\((\d+)\)")
+def convert_to_time_string(length_str):
+    hours, minutes = 0, 0
+    # Extract hours and minutes from the matched string
+    hour_match = re.search(r"(\d+)h", length_str)
+    if hour_match:
+        hours = int(hour_match.group(1))
+    minute_match = re.search(r"(\d+)m", length_str)
+    if minute_match:
+        minutes = int(minute_match.group(1))
+    # Convert hours and minutes to time string
+    time_str = f"{hours:02d}:{minutes:02d}"
+    return time_str
 
-    # Split Length into Length and LengthDP
+
+# Split Length and LengthDP like `18h (9)`, also works for length votes
+def split_length(df, is_lengthvotes):
+    # Initialize length votes dataframe to avoid KeyError
+    if is_lengthvotes:
+        # Rename the "Time" column to "Length"
+        df.rename(columns={"Time": "Length"}, inplace=True)
     # Loop through each row
     for index, row in df.iterrows():
-        for pair in _TO_REPLACE_DEV:
-            if pair[0] in str(row["Developer"]):
-                df.at[index, "Developer"] = pair[1]
+        if not is_lengthvotes:
+            for pair in _TO_REPLACE_DEV:
+                if pair[0] in str(row["Developer"]):
+                    df.at[index, "Developer"] = pair[1]
 
         # Check and split Length and LengthDP if necessary
         for pair in _TO_REPLACE_LEN:
@@ -84,57 +99,111 @@ def sanitized_dataframe(df):
             else:
                 length_data = df.at[index, "Length"]
                 if isinstance(length_data, str):
-                    match = re.search(r"(\d+h\d+m|\d+h|\d+m)\s\((\d+)\)", length_data)
-                    if match:
-                        df.at[index, "Length"] = match.group(1)
-                        # Make sure LengthDP is integer
-                        df.at[index, "LengthDP"] = int(match.group(2))
+                    # Length vote is simpler
+                    if is_lengthvotes:
+                        match = re.search(r"(\d+h\d+m|\d+h|\d+m)", length_data)
+                        if match:
+                            length_str = match.group(1)
+                            # Convert length like `12h`, `2h3m` to `12:00` and `02:03`
+                            time_str = convert_to_time_string(length_str)
+                            df.at[index, "Length"] = time_str
+                    # User list is more complicated
+                    else:
+                        match = re.search(
+                            r"(\d+h\d+m|\d+h|\d+m)\s\((\d+)\)", length_data
+                        )
+                        if match:
+                            length_str = match.group(1)
+                            # Convert length like `12h`, `2h3m` to `12:00` and `02:03`
+                            time_str = convert_to_time_string(length_str)
+                            df.at[index, "Length"] = time_str
+                            # Make sure LengthDP is integer
+                            df.at[index, "LengthDP"] = int(match.group(2))
 
     # Apply the replacement function
     df = df.apply(replace_length, axis=1)
 
-    # Replace "-" (implying null vote) with NaN
+    return df
+
+
+# Make already nicely exported CSV more awesome
+def sanitized_dataframe(df):
+    # Flag length votes dataframe
+    if "Time" in df.columns:
+        is_lengthvotes = True
+    else:
+        is_lengthvotes = False
+
+    if not is_lengthvotes:
+        # Split df["Rating"] into df["Rating"] and df["RatingDP"]
+        df[["Rating", "RatingDP"]] = df["Rating"].str.extract(r"(\d+\.\d+)\s\((\d+)\)")
+
+    # Split Length into Length and LengthDP
+    df = split_length(df, is_lengthvotes)
+
+    # Replace "-" (implying null vote/speed) with NaN
     df.replace("-", np.nan, inplace=True)
 
     # Exclude blacklisted games
     # df = df[df["Blacklisted"] != "✓"]
 
     # Reorder the columns
-    df = df[
-        [
-            "Vote",
-            "Rating",
-            "RatingDP",
-            "Labels",
-            "Title",
-            "Developer",
-            "Start date",
-            "Finish date",
-            "Release date",
-            "Length",
-            "LengthDP",
+    if is_lengthvotes:
+        df = df[
+            [
+                "Date",
+                "Title",
+                "Length",
+                "Speed",
+                "Rel",
+                "Notes",
+            ]
         ]
-    ]
+    else:
+        df = df[
+            [
+                "Vote",
+                "Rating",
+                "RatingDP",
+                "Labels",
+                "Title",
+                "Developer",
+                "Start date",
+                "Finish date",
+                "Release date",
+                "Length",
+                "LengthDP",
+            ]
+        ]
 
     return df
 
 
 # Read CSV file
-file_list = glob.glob("vndb-list-export-*.csv")
+file_list = glob.glob("vndb-lengthvotes-export-*.csv") + glob.glob(
+    "vndb-list-export-*.csv"
+)
 if len(file_list) > 0:
-    filepath = file_list[0]
-    df = pd.read_csv(filepath)
-    new_file_name = filepath.replace("vndb-list-export-", "vndb-list-sanitized-")
+    # Sanitize every file
+    for filepath in file_list:
+        if "vndb-list-export-" in filepath:
+            new_file_name = filepath.replace(
+                "vndb-list-export-", "vndb-list-sanitized-"
+            )
+        else:
+            new_file_name = filepath.replace(
+                "vndb-lengthvotes-export-", "vndb-lengthvotes-sanitized-"
+            )
+        df = pd.read_csv(filepath)
+        df = sanitized_dataframe(df)
+
+        # Debug preview
+        print(df)
+
+        # Export to CSV
+        df.to_csv(new_file_name, index=False, quoting=1)
 else:
     print(
-        "VNDB list CSV not found.\nPlease install VNDB User List Exporter and export first.\nYou can get it from https://github.com/Vinfall/UserScripts#list."
+        "VNDB exported CSV not found.\nPlease install VNDB List Export and export first.\nYou can get it from https://github.com/Vinfall/UserScripts#list."
     )
     exit()
-
-df = sanitized_dataframe(df)
-
-# Debug preview
-print(df)
-
-# Export to CSV
-df.to_csv(new_file_name, index=False, quoting=1)
