@@ -14,6 +14,17 @@ TBH it's not meant to be used by others, but anyway here is the recipe.
 and place it in the top directory, the vanilla `XML` VNDB export will NOT work.
 You can also use [the counterfeit example](example/vndb-list-export-20240101.csv) to take a look at the results.
 
+***
+
+### Easy way
+
+Install Python, R & GNU Make, clone the repo and simply run `make`.
+Everything should be done now. Just check `output` or console log for the results.
+
+***
+
+### Vanilla way
+
 1. Install Python, R & respective dependencies:
 
 ```python
