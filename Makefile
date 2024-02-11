@@ -26,7 +26,8 @@ sanitize: $(SANITIZER)
 # Generate plots
 plot: $(BARCHART) $(PLOT)
 	$(R) $(PLOT)
+	-rm Rplots.pdf
 
 # Clean up outputs
 clean:
-	-rm vndb-*-sanitized-*.csv vndb-list-barchartrace-*.csv output/*.png
+	-rm vndb-*-sanitized-*.csv vndb-list-barchartrace-*.csv Rplots.pdf output/*.png
