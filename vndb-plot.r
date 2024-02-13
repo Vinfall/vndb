@@ -60,7 +60,7 @@ temporal_stat <- function(data) {
   # Calculate vote "confidence index"
   # Based on dumb average & MY faulty assumption
   # Ranking algorithm is hard
-  # TODO: add hyperlink to explanation on my blog once published
+  # Theory work: https://blog.vinfall.com/posts/2024/02/vndb/#confidence-index
   data <- data %>%
     mutate(
       confidence_index = cut(RatingDP,
@@ -340,9 +340,9 @@ weekly_vn_heatmap <- function(data) {
   )
 }
 
-# temporal_stat(data)
+temporal_stat(data)
 # vote_rating_regression(data)
-vote_length_regression(data)
+# vote_length_regression(data)
 # stat_correlogram(data)
 
 # header_bar(data, "Labels")
