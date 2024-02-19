@@ -20,6 +20,7 @@ You can also use [the counterfeit example](example/vndb-list-export-20240101.csv
 
 Install Python, R & GNU Make, clone the repo and simply run `make`.
 Everything should be done now. Just check `output` or console log for the results.
+To clean up the data and restart, run `make clean`.
 
 ***
 

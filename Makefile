@@ -10,8 +10,11 @@ SANITIZER = vndb-sanitizer.py
 BARCHART = vndb-barchartrace.py
 PLOT = vndb-plot.r
 
-# Default
-all: install sanitize plot
+# Default target, run one by one
+all:
+	$(MAKE) install
+	$(MAKE) sanitize
+	$(MAKE) plot
 
 # Install dependencies for Python and R
 install: $(REQUIREMENTS) $(PACKAGES)
