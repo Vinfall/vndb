@@ -341,13 +341,13 @@ weekly_vn_heatmap <- function(data) {
 }
 
 temporal_stat(data)
-# vote_rating_regression(data)
-# vote_length_regression(data)
-# stat_correlogram(data)
+vote_rating_regression(data)
+vote_length_regression(data)
+stat_correlogram(data)
 
-# header_bar(data, "Labels")
+header_bar(data, "Labels")
 # Be careful, these would throw alota of warnings
 # header_bar(data, "Vote")
 # header_bar(data, "Developer")
 
-# weekly_vn_heatmap(data)
+weekly_vn_heatmap(data)

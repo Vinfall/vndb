@@ -8,6 +8,7 @@ using `ggplot2` package provided by R language and discarded availability for ot
 
 ## Usage
 
+Tested with Python 3.12.2 & R 4.3.3 on Windows 11 24H2 & [DevuanWSL](https://github.com/Vinfall/DevuanWSL).
 TBH it's not meant to be used by others, but anyway here is the recipe.
 
 0. Export VNDB VN/length vote list with [instruction provided here](https://github.com/Vinfall/UserScripts?tab=readme-ov-file#vndb-list-export)
