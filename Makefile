@@ -5,7 +5,7 @@ R = Rscript
 
 # Dependencies & scripts
 REQUIREMENTS = requirements.txt
-PACKAGES = tidyverse corrplot
+PACKAGES = tidyverse corrplot gridExtra
 SANITIZER = vndb-sanitizer.py
 BARCHART = vndb-barchartrace.py
 PLOT = vndb-plot.r
