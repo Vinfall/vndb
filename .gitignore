@@ -2,6 +2,7 @@
 venv
 virtualenv
 __pycache__/*
+.env
 # CSV
 vndb*.csv
 !example/*.csv
