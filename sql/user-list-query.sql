@@ -1,5 +1,6 @@
 select vn.title,
     vn.alias,
+    string_agg(distinct p.name, ', ') as "Developer",
     round(CAST(vote AS numeric) / 10, 1) as "Vote",
     u.vid,
     u.started,
@@ -26,6 +27,8 @@ from vndb.ulist_vns u
     and rtype <> 'trial'
     left join vn_length_votes lv on vn.id = lv.vid
     and speed = 1
+    left join releases_producers rp on r.id = rp.id
+    left join producers p on rp.pid = p.id
 WHERE u.uid = { UID } --Change to your User ID
     -- and vote is not null  -- Add this if you want to only Voted VN
     AND NOT labels @> '{5}' -- Exclude wishlist items (label value == {5})
