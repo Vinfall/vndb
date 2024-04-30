@@ -12,7 +12,13 @@ select vn.title,
     -- Deal with 99999901 stuff
     c_votecount as "RatingDP",
     round(CAST(c_rating AS numeric) / 100, 2) as "Rating",
-    labels
+    CASE
+        WHEN labels @> '{1}' THEN 'Playing'
+        WHEN labels @> '{2}' THEN 'Finished'
+        WHEN labels @> '{3}' THEN 'Stalled'
+        WHEN labels @> '{4}' THEN 'Dropped'
+        WHEN labels @> '{5}' THEN 'Wishlist'
+    END as "Labels"
 from vndb.ulist_vns u
     join vndb.vn vn on u.vid = vn.id
     left join releases_vn rvn on rvn.vid = vn.id
