@@ -8,10 +8,10 @@ using `ggplot2` package provided by R language and discarded availability for ot
 
 ## Usage
 
-Tested with Python 3.12 & R 4.4.0 on Windows 11 24H2 & [DevuanWSL](https://github.com/Vinfall/DevuanWSL).
+Tested with Python 3.12 & R 4.4 on Void Linux ~~Windows 11 24H2 & [DevuanWSL](https://github.com/Vinfall/DevuanWSL)~~.
 TBH it's not meant to be used by others, but anyway here is the recipe.
 
-0. Export VNDB VN/length vote list with [instruction provided here](https://github.com/Vinfall/UserScripts?tab=readme-ov-file#vndb-list-export)
+0. Export VNDB VN/length vote list with [instruction provided here](https://github.com/Vinfall/UserScripts#vndb-list-export)
 and place it in the top directory, the vanilla `XML` VNDB export will NOT work.
 You can also use [the counterfeit example](example/vndb-list-export-20240101.csv) to take a look at the results.
 
