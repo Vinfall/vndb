@@ -18,7 +18,7 @@ def calculate_number(dataframe):
     count_value = []
 
     # Iterate over each row in the sorted DataFrame
-    for row in df_sorted.iterrows():
+    for _index, row in df_sorted.iterrows():
         # Get the current 'Date' and 'Labels' values
         current_date = row["Date"]
         current_label = row["Labels"]
