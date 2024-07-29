@@ -64,7 +64,9 @@ def calculate_number(dataframe):
     merged_df["Count"] = merged_df.groupby("Labels")["Count"].ffill()
 
     # Fill the first 'Count' value of every label with 0
-    merged_df["Count"] = merged_df.groupby("Labels")["Count"].fillna(0)
+    merged_df["Count"] = merged_df.groupby("Labels")["Count"].transform(
+        lambda x: x.fillna(0)
+    )
 
     return merged_df
 
