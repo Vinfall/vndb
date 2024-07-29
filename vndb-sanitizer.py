@@ -2,9 +2,11 @@
 # -*- coding: utf-8 -*-
 
 import glob
+import re
+import sys
+
 import numpy as np
 import pandas as pd
-import re
 
 # Convert length estimation to readable time, YMMV
 _TO_REPLACE_LEN = (
@@ -129,10 +131,7 @@ def split_length(df, is_lengthvotes):
 # Make already nicely exported CSV more awesome
 def sanitized_dataframe(df):
     # Flag length votes dataframe
-    if "Time" in df.columns:
-        is_lengthvotes = True
-    else:
-        is_lengthvotes = False
+    is_lengthvotes = bool("Time" in df.columns)
 
     if not is_lengthvotes:
         # Split df["Rating"] into df["Rating"] and df["RatingDP"]
@@ -204,6 +203,8 @@ if len(file_list) > 0:
         df.to_csv(new_file_name, index=False, quoting=1)
 else:
     print(
-        "VNDB exported CSV not found.\nPlease install VNDB List Export and export first.\nYou can get it from https://github.com/Vinfall/UserScripts#list."
+        "VNDB exported CSV not found.\n\
+Please install VNDB List Export and export first.\n\
+You can get it from https://github.com/Vinfall/UserScripts#list."
     )
-    exit()
+    sys.exit()

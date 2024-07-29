@@ -2,26 +2,28 @@
 # -*- coding: utf-8 -*-
 
 import glob
+import sys
+
 import pandas as pd
 
 
 # Modified from HLTB-Barchartrace.py
 # Doc:  https://blog.vinfall.com/posts/2023/11/hltb/#bar-chart-race
 # Code: https://github.com/Vinfall/hltb/blob/370288b0831d49fd29d720b5343ce3ff98714f2a/HLTB-Barchartrace.py#L47-L103
-def calculate_number(df):
+def calculate_number(dataframe):
     # Sort the DataFrame by 'Date' column in ascending order
-    df_sorted = df.sort_values(by="Date")
+    df_sorted = dataframe.sort_values(by="Date")
 
     # Initialize an empty list to store the calculated 'Count' values
     count_value = []
 
     # Iterate over each row in the sorted DataFrame
-    for index, row in df_sorted.iterrows():
+    for row in df_sorted.iterrows():
         # Get the current 'Date' and 'Labels' values
         current_date = row["Date"]
         current_label = row["Labels"]
 
-        # Count the occurrences of the current label in the rows with dates up to and including the current date
+        # Count occurrences of current label in rows with dates up to current date
         count = (
             df_sorted.loc[df_sorted["Date"] <= current_date]
             .loc[df_sorted["Labels"] == current_label]
@@ -67,11 +69,11 @@ def calculate_number(df):
     return merged_df
 
 
-def format_barchartrace(df, date_type):
+def format_barchartrace(dataframe, date_type):
     # Rename date_type column to "Date"
-    df.rename(columns={date_type: "Date"}, inplace=True)
+    dataframe.rename(columns={date_type: "Date"}, inplace=True)
     # Calculate Count of platforms at a specific date
-    df = calculate_number(df)
+    df = calculate_number(dataframe)
     return df
 
 
@@ -83,7 +85,8 @@ if len(file_list) > 0:
         new_file_name = filepath.replace("vndb-list-export-", "vndb-list-barchartrace-")
         df = pd.read_csv(filepath)
         # Accepted vlaues: 'Start date', 'Finish date', 'Release date'
-        # Note: 'Finish date' does not work much, which is expected since other labels would not exist if you finish it already
+        # Note: 'Finish date' does not work much, which is expected
+        #       since other labels would not exist if you finish it already
         df = format_barchartrace(df, "Start date")
         # Debug preview
         print(df)
@@ -91,9 +94,11 @@ if len(file_list) > 0:
         df.to_csv(new_file_name, index=False, quoting=1)
 else:
     print(
-        "VNDB exported CSV not found.\nPlease install VNDB List Export and export first.\nYou can get it from https://github.com/Vinfall/UserScripts#list."
+        "VNDB exported CSV not found.\n\
+Please install VNDB List Export and export first.\n\
+You can get it from https://github.com/Vinfall/UserScripts#list."
     )
-    exit()
+    sys.exit()
 
 # Seperate this to avoid message flooding in loops
 print("Now drop output to https://fabdevgit.github.io/barchartrace")
