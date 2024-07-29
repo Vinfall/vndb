@@ -4,6 +4,7 @@ library(dplyr)
 library(tidyr)
 library(stringr)
 library(ggplot2)
+library(ggcorrplot)
 library(gridExtra)
 library(lubridate)
 # Miscellaneous
@@ -216,6 +217,43 @@ stat_correlogram <- function(data) {
   # ggsave("output/corrplot-stat.png", plot = replayPlot(p1), width = 8, height = 7, units = "in", dpi = 300 ) # nolint
 }
 
+stat_correlogram_new <- function(data) {
+  # Filter finished VNs w/ vote stats
+  filtered_data <- filter(data, Labels == "Finished" & Vote != 0 & Rating != 0 & Length != 0) # nolint
+
+  # Convert dates to numeric values
+  filtered_data$`Start date` <- as.numeric(filtered_data$`Start date`)
+  filtered_data$`Finish date` <- as.numeric(filtered_data$`Finish date`)
+  filtered_data$`Release date` <- as.numeric(filtered_data$`Release date`)
+  # Correlate
+  numeric_data <- filtered_data[
+    , c(
+      "Vote", "Rating", "RatingDP", "TotalMinutes", "LengthDP",
+      "Start date", "Finish date", "Release date"
+    )
+  ]
+  # Use natural language in favor of buzzword
+  colnames(numeric_data)[colnames(numeric_data) == "TotalMinutes"] <- "Length"
+  cor_matrix <- cor(numeric_data, use = "complete.obs")
+
+  # Generate correlation matrix using ggplot2
+  ggcorrplot(
+    cor_matrix,
+    method = "circle",
+    type = "lower",
+    lab = TRUE,
+    lab_size = 3,
+    title = "Stat Correlation Matrix",
+    ggtheme = theme_minimal()
+  )
+
+  # Save the plot
+  ggsave(
+    filename = "output/corrplot-stat-kai.png",
+    width = 10, height = 10, units = "in", dpi = 300
+  )
+}
+
 vote_length_regression <- function(data) {
   # Filter finished VNs w/ real length (instead of guessed one)
   # Check "_TO_REPLACE_LEN" in `vndb-sanitizer.py`
@@ -343,7 +381,8 @@ weekly_vn_heatmap <- function(data) {
 temporal_stat(data)
 vote_rating_regression(data)
 vote_length_regression(data)
-stat_correlogram(data)
+# stat_correlogram(data)
+stat_correlogram_new(data)
 
 header_bar(data, "Labels")
 # Be careful, these would throw alota of warnings
