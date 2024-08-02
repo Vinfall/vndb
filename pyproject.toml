@@ -24,4 +24,5 @@ disable = [
     "missing-module-docstring",
     "missing-function-docstring",
     "no-else-return",
+    "no-else-break",
 ]

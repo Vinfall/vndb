@@ -85,15 +85,15 @@ if len(file_list) > 0:
     # Sanitize every file
     for filepath in file_list:
         new_file_name = filepath.replace("vndb-list-export-", "vndb-list-barchartrace-")
-        df = pd.read_csv(filepath)
+        df_raw = pd.read_csv(filepath)
         # Accepted vlaues: 'Start date', 'Finish date', 'Release date'
         # Note: 'Finish date' does not work much, which is expected
         #       since other labels would not exist if you finish it already
-        df = format_barchartrace(df, "Start date")
+        df_mod = format_barchartrace(df_raw, "Start date")
         # Debug preview
-        print(df)
+        print(df_mod.head())
         # Export to CSV
-        df.to_csv(new_file_name, index=False, quoting=1)
+        df_mod.to_csv(new_file_name, index=False, quoting=1)
 else:
     print(
         "VNDB exported CSV not found.\n\

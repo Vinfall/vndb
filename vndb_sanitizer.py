@@ -196,14 +196,14 @@ if len(file_list) > 0:
             new_file_name = filepath.replace(
                 "vndb-lengthvotes-export-", "vndb-lengthvotes-sanitized-"
             )
-        df = pd.read_csv(filepath)
-        df = sanitized_dataframe(df)
+        df_raw = pd.read_csv(filepath)
+        df_mod = sanitized_dataframe(df_raw)
 
         # Debug preview
-        print(df)
+        print(df_mod.head())
 
         # Export to CSV
-        df.to_csv(new_file_name, index=False, quoting=1)
+        df_mod.to_csv(new_file_name, index=False, quoting=1)
 else:
     print(
         "VNDB exported CSV not found.\n\
