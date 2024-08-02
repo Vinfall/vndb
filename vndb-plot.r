@@ -16,7 +16,7 @@ files <- list.files(pattern = "vndb-list-sanitized-.*\\.csv")
 # Check if any files were found
 if (length(files) == 0) {
   stop("VNDB sanitized CSV not found.\n
-    Please run vndb-sanitizer.py first.")
+    Please run vndb_sanitizer.py first.")
 }
 
 # Read the first matching file into a data frame with UTF-8 encoding

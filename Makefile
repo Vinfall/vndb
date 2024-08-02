@@ -1,4 +1,7 @@
-# Commands
+# Varables
+VENV = .venv
+# PYTHON = $(VENV)/bin/python
+# PIP = $(VENV)/bin/pip
 PYTHON = python
 PIP = pip
 R = Rscript
@@ -6,8 +9,8 @@ R = Rscript
 # Dependencies & scripts
 REQUIREMENTS = requirements.txt
 PACKAGES = tidyverse corrplot gridExtra
-SANITIZER = vndb-sanitizer.py
-BARCHART = vndb-barchartrace.py
+SANITIZER = vndb_sanitizer.py
+BARCHART = vndb_barchartrace.py
 PLOT = vndb-plot.r
 
 # Default target, run one by one
@@ -21,9 +24,14 @@ run:
 	$(MAKE) plot
 
 # Install dependencies for Python and R
-install: $(REQUIREMENTS) $(PACKAGES)
+install: $(VENV) $(PACKAGES)
 	$(PIP) install -r $(REQUIREMENTS)
 	$(R) -e "install.packages(c('$(PACKAGES)'), repos = 'https://cran.rstudio.com/')"
+
+$(VENV):
+	virtualenv $(VENV)
+	source $(VENV)/bin/activate; \
+	$(PIP) install -r $(REQUIREMENTS)
 
 # Sanitize data
 sanitize: $(SANITIZER)
