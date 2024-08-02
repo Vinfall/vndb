@@ -16,6 +16,10 @@ all:
 	$(MAKE) sanitize
 	$(MAKE) plot
 
+run:
+	$(MAKE) sanitize
+	$(MAKE) plot
+
 # Install dependencies for Python and R
 install: $(REQUIREMENTS) $(PACKAGES)
 	$(PIP) install -r $(REQUIREMENTS)
