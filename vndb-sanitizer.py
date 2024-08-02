@@ -43,6 +43,8 @@ _TO_REPLACE_DEV = (
     ("スパイク・チュンソフト", "Spike Chunsoft"),
     ("スパイク", "Spike"),
     ("チュンソフト", "Chunsoft"),
+    ("ワールプール", "Whirlpool"),
+    ("エスクード", "ESCUDE"),
     # Alias
     ("株式会社カプコン", "CAPCOM"),
     ("ニトロプラス", "Nitro+"),
@@ -51,6 +53,7 @@ _TO_REPLACE_DEV = (
     # Imprint
     ("ブルゲLIGHT", "Blue Gale"),
     ("MOONSTONE Cherry", "MOONSTONE"),
+    ("あかべぇそふとすりぃ", "AKABEiSOFT"),
 )
 
 
