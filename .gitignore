@@ -10,3 +10,5 @@ vndb*.csv
 output/*.png
 output/*.pdf
 Rplots.pdf
+# Misc
+vndb-backup-*.sql
