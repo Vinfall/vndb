@@ -3,12 +3,11 @@ venv
 virtualenv
 __pycache__/*
 .env
-# CSV
+# Data
 vndb*.csv
+vndb*.sql
 !example/*.csv
-# Plot
-output/*.png
-output/*.pdf
+# Output
+output/*
+!output/.gitkeep
 Rplots.pdf
-# Misc
-vndb-backup-*.sql
