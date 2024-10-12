@@ -1,3 +1,5 @@
+# VNDB
+
 ## Intro
 
 VNDB, is an acronym of *VNDB Novel Data Breakup*, which is also the abbreviation of *Visual Novel DataBase*.
@@ -15,13 +17,17 @@ TBH it's not meant to be used by others, but anyway here is the recipe.
 and place it in the top directory, the vanilla `XML` VNDB export will NOT work.
 You can also use [the counterfeit example](example/vndb-list-export-20240101.csv) to take a look at the results.
 
+A [VNDB Query](https://query.vndb.org/about) is also planned.
+With this, you can get the data with just a single UID (provided it's not private).
+No more page jumps or dirty UserScript needed.
+
 ***
 
 ### Easy way
 
-Install Python, R & GNU Make, clone the repo and simply run `make`.
+Install Python, R & GNU Make (which you can install on Windows too), clone the repo and simply run `make`.
 Everything should be done now. Just check `output` or console log for the results.
-To clean up the data and restart, run `make clean`.
+To clean up the data before restart, run `make clean`.
 
 ***
 
@@ -44,8 +50,8 @@ install.packages("gridExtra")
 2. Now run the sanitizer and plot generator:
 
 ```sh
-python ./vndb-sanitizer.py
-python ./vndb-barchartrace.py
+python ./vndb_sanitizer.py
+python ./vndb_barchartrace.py
 Rscript ./vndb-plot.r
 ```
 
