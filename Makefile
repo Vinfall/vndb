@@ -11,15 +11,18 @@ REQUIREMENTS = requirements.txt
 PACKAGES = tidyverse corrplot gridExtra
 SANITIZER = vndb_sanitizer.py
 BARCHART = vndb_barchartrace.py
+QUERY = vndb_query.py
 PLOT = vndb-plot.r
 
 # Default target, run one by one
 all:
 	$(MAKE) install
+	$(MAKE) clean
 	$(MAKE) sanitize
 	$(MAKE) plot
 
 run:
+	$(MAKE) clean
 	$(MAKE) sanitize
 	$(MAKE) plot
 
@@ -33,6 +36,10 @@ $(VENV):
 	source $(VENV)/bin/activate; \
 	$(PIP) install -r $(REQUIREMENTS)
 
+# Get data from VNDB query
+query:
+	$(PYTHON) ${QUERY}
+
 # Sanitize data
 sanitize: $(SANITIZER)
 	$(PYTHON) $(SANITIZER)
@@ -45,4 +52,5 @@ plot: $(BARCHART) $(PLOT)
 
 # Clean up outputs
 clean:
-	-rm vndb-*-sanitized-*.csv vndb-list-barchartrace-*.csv Rplots.pdf output/*.png
+	-rm vndb-*-sanitized-*.csv vndb-list-barchartrace-*.csv Rplots.pdf
+	-rm output/*.png output/*.json output/*.csv
