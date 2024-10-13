@@ -9,7 +9,7 @@ select vn.title,
         when min(released) % 100 = 99 then min(released) - 98
         else min(released)
     end as "Release Date",
-    -- Deal with 99999901 stuff
+    -- deal with 99999901 stuff
     c_votecount as "RatingDP",
     round(CAST(c_rating AS numeric) / 100, 2) as "Rating",
     CASE
@@ -26,9 +26,9 @@ from vndb.ulist_vns u
     and rtype <> 'trial'
     left join releases_producers rp on r.id = rp.id
     left join producers p on rp.pid = p.id
-WHERE u.uid = { UID } --Change to your User ID
-    -- and vote is not null  -- Add this if you want to only Voted VN
-    AND NOT labels @> '{5}' -- Exclude wishlist items (label value == {5})
+WHERE u.uid = { UID } -- change to your User ID
+    -- and vote is not null  -- voted VN only
+    AND NOT labels @> '{5}' -- exclude wishlist items
 group by vn.title,
     vn.alias,
     vote,
