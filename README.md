@@ -8,6 +8,17 @@ It contains the companion scripts for [VNDB List Export](https://github.com/Vinf
 Although I started with general applications in mind, I became more interest in visualization
 using `ggplot2` package provided by R language and discarded availability for others in the end.
 
+## Query
+
+A [VNDB Query](https://query.vndb.org/about) is nearly finished.
+With this, you can get the data with just a single UID (provided the list is not private).
+No more page jumps or dirty UserScript needed.
+
+> [!TIP]
+> A downside of query is it's synced with VNDB's public dump daily at 8:30 UTC, so it may take up to 24 hours (+ ~30 minutes) for changes to the main database to show up in query results.
+
+This is usually not a problem as I can't see why someone would use it on a daily basis.
+
 ## Usage
 
 Tested with Python 3.12 & R 4.4 on Void Linux ~~Windows 11 24H2 & [DevuanWSL](https://github.com/Vinfall/DevuanWSL)~~.
@@ -16,10 +27,6 @@ TBH it's not meant to be used by others, but anyway here is the recipe.
 0. Export VNDB VN/length vote list with [instruction provided here](https://github.com/Vinfall/UserScripts#vndb-list-export)
 and place it in the top directory, the vanilla `XML` VNDB export will NOT work.
 You can also use [the counterfeit example](example/vndb-list-export-20240101.csv) to take a look at the results.
-
-A [VNDB Query](https://query.vndb.org/about) is also planned.
-With this, you can get the data with just a single UID (provided it's not private).
-No more page jumps or dirty UserScript needed.
 
 ***
 
@@ -59,4 +66,7 @@ Rscript ./vndb-plot.r
 
 ## [License](LICENSE)
 
+
 WTFPL
+
+[user-list-query.sql](./sql/user-list-query.sql) is (probably) adapted from [User VN List](https://query.vndb.org/3ccc1cf3e6f18e48), other queries are written by myself and still licensed under WTFPL.
