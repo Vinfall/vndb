@@ -1,35 +1,40 @@
-select vn.title,
+SELECT vn.title,
     vn.alias,
-    string_agg(distinct p.name, ', ') as "Developer",
-    round(CAST(vote AS numeric) / 10, 1) as "Vote",
+    string_agg(distinct p.name, ', ') AS "Developer",
+    round(CAST(vote AS numeric) / 10, 1) AS "Vote",
     u.vid,
     u.started,
     u.finished,
-    case
-        when min(released) % 100 = 99 then min(released) - 98
-        else min(released)
-    end as "Release Date",
-    -- deal with 99999901 stuff
-    c_votecount as "RatingDP",
-    round(CAST(c_rating AS numeric) / 100, 2) as "Rating",
     CASE
-        WHEN labels @> '{1}' THEN 'Playing'
+        WHEN min(released) % 100 = 99 THEN TO_CHAR(
+            TO_DATE((min(released) - 98)::text, 'YYYYMMDD'),
+            'YYYY-MM-DD'
+        ) -- deal with 99999901 stuff
+        ELSE TO_CHAR(
+            TO_DATE(min(released)::text, 'YYYYMMDD'),
+            'YYYY-MM-DD'
+        ) -- convert to ISO date
+    END AS "Released",
+    c_votecount AS "RatingDP",
+    round(CAST(c_rating AS numeric) / 100, 2) AS "Rating",
+    CASE
+        WHEN labels @> '{1}' THEN 'Playing' -- possible to have multiple labels
         WHEN labels @> '{2}' THEN 'Finished'
         WHEN labels @> '{3}' THEN 'Stalled'
         WHEN labels @> '{4}' THEN 'Dropped'
         WHEN labels @> '{5}' THEN 'Wishlist'
-    END as "Labels"
-from vndb.ulist_vns u
-    join vndb.vn vn on u.vid = vn.id
-    left join releases_vn rvn on rvn.vid = vn.id
-    left join releases r on r.id = rvn.id
-    and rtype <> 'trial'
-    left join releases_producers rp on r.id = rp.id
-    left join producers p on rp.pid = p.id
+    END AS "Labels"
+FROM vndb.ulist_vns u
+    JOIN vndb.vn vn ON u.vid = vn.id
+    LEFT JOIN releases_vn rvn ON rvn.vid = vn.id
+    LEFT JOIN releases r ON r.id = rvn.id
+    AND rtype <> 'trial'
+    LEFT JOIN releases_producers rp ON r.id = rp.id
+    LEFT JOIN producers p ON rp.pid = p.id
 WHERE u.uid = { UID } -- change to your User ID
     -- and vote is not null  -- voted VN only
-    AND NOT labels @> '{5}' -- exclude wishlist items
-group by vn.title,
+    AND NOT labels @> '{5}' -- exclude wishlist
+GROUP BY vn.title,
     vn.alias,
     vote,
     u.vid,
@@ -38,3 +43,4 @@ group by vn.title,
     c_votecount,
     c_rating,
     labels
+ORDER BY u.started DESC

@@ -26,7 +26,7 @@ TBH it's not meant to be used by others, but anyway here is the recipe.
 
 0. Export VNDB VN/length vote list with [instruction provided here](https://github.com/Vinfall/UserScripts#vndb-list-export)
 and place it in the top directory, the vanilla `XML` VNDB export will NOT work.
-You can also use [the counterfeit example](example/vndb-list-export-20240101.csv) to take a look at the results.
+You can also use [the counterfeit example](example/) to take a look at the results.
 
 ***
 
