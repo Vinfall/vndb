@@ -30,9 +30,12 @@ _TO_REPLACE_DEV = (
     ("アリスソフト", "AliceSoft"),
     ("あっぷりけ", "Applique"),
     ("アークシステムワークス株式会社", "Arc System Works"),
+    ("株式会社コンパイルハート", "Compile Heart"),
+    ("スティング", "STING"),
     ("きゃべつそふと", "Cabbage Soft"),
     ("株式会社ガイナックス", "Gainax"),
-    ("キッド", "KID"),
+    ("キッドナップカンパニー", "Kidnap"),
+    # ("キッド", "KID"),
     ("コナミ", "KONAMI"),
     ("まどそふと", "Madosoft"),
     ("ま～まれぇど", "Marmalade"),
@@ -45,15 +48,18 @@ _TO_REPLACE_DEV = (
     ("チュンソフト", "Chunsoft"),
     ("ワールプール", "Whirlpool"),
     ("エスクード", "ESCUDE"),
+    ("みるくふぁくとりー", "Milk Factory"),
     # Alias
     ("株式会社カプコン", "CAPCOM"),
     ("ニトロプラス", "Nitro+"),
     ("パープルソフトウェア", "Purple"),
     ("Juzi Ban", "橘子班"),
     # Imprint
+    ("ALcot ハニカム", "ALcot"),
     ("ブルゲLIGHT", "Blue Gale"),
     ("MOONSTONE Cherry", "MOONSTONE"),
     ("あかべぇそふとすりぃ", "AKABEiSOFT"),
+    ("あかべぇそふとつぅ", "AKABEiSOFT"),  # akb2
 )
 
 
@@ -89,7 +95,9 @@ def split_length(df, is_lengthvotes):
         if not is_lengthvotes:
             for pair in _TO_REPLACE_DEV:
                 if pair[0] in str(row["Developer"]):
-                    df.at[index, "Developer"] = pair[1]
+                    df.at[index, "Developer"] = str(row["Developer"]).replace(
+                        pair[0], pair[1]
+                    )
 
         # Check and split Length and LengthDP if necessary
         for pair in _TO_REPLACE_LEN:
