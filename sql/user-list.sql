@@ -6,15 +6,11 @@ SELECT vn.title,
     u.started,
     u.finished,
     CASE
-        WHEN min(released) % 100 = 99 THEN TO_CHAR(
-            TO_DATE((min(released) - 98)::text, 'YYYYMMDD'),
-            'YYYY-MM-DD'
-        ) -- deal with 99999901 stuff
-        ELSE TO_CHAR(
-            TO_DATE(min(released)::text, 'YYYYMMDD'),
-            'YYYY-MM-DD'
-        ) -- convert to ISO date
+        min(released) %100
+        WHEN 99 THEN min(released) -98
+        ELSE min(released)
     END AS "Released",
+    -- deal with 99999901 stuff
     c_votecount AS "RatingDP",
     round(CAST(c_rating AS numeric) / 100, 2) AS "Rating",
     CASE
@@ -43,4 +39,3 @@ GROUP BY vn.title,
     c_votecount,
     c_rating,
     labels
-ORDER BY u.started DESC
