@@ -1,4 +1,7 @@
-SELECT *
+SELECT Vote,
+    Title,
+    Developer,
+    "Release date"
 FROM "VNDB"
 WHERE "Finish date" BETWEEN '2024-09-01' AND '2024-09-30' -- would get replaced in monthly-legacy.py
     OR (
@@ -9,4 +12,6 @@ WHERE "Finish date" BETWEEN '2024-09-01' AND '2024-09-30' -- would get replaced 
             AND NOT Labels = 'Playing'
         )
     )
-ORDER BY "Start date" DESC
+ORDER BY "Vote" DESC,
+    "Rating" DESC,
+    "LengthDP" DESC;
