@@ -38,12 +38,15 @@ $(VENV):
 
 # Get data from VNDB query
 query:
-	$(PYTHON) ${QUERY}
+	$(PYTHON) $(QUERY)
 
 # Sanitize data
 sanitize: $(SANITIZER)
 	$(PYTHON) $(SANITIZER)
 	$(PYTHON) $(BARCHART)
+
+legacy:
+	$(PYTHON) monthly_legacy.py
 
 # Generate plots
 plot: $(BARCHART) $(PLOT)
