@@ -69,4 +69,4 @@ Rscript ./vndb-plot.r
 
 WTFPL
 
-[user-list-query.sql](./sql/user-list-query.sql) is (probably) adapted from [User VN List](https://query.vndb.org/3ccc1cf3e6f18e48), other queries are written by myself and still licensed under WTFPL.
+[user-list.sql](./sql/user-list.sql) is (probably) adapted from [User VN List](https://query.vndb.org/3ccc1cf3e6f18e48), other queries are written by myself and still licensed under WTFPL.
