@@ -55,5 +55,5 @@ plot: $(BARCHART) $(PLOT)
 
 # Clean up outputs
 clean:
-	-rm vndb-*-sanitized-*.csv vndb-list-barchartrace-*.csv Rplots.pdf
+	-rm vndb-*-sanitized-*.csv vndb-list-barchartrace-*.csv vndb-ulist-monthly-*.csv Rplots.pdf
 	-rm output/*.png output/*.json output/*.csv
