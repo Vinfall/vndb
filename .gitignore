@@ -1,8 +1,8 @@
-# Virtual environment
+# Env
 venv
 virtualenv
 __pycache__/*
-.env
+.env.local
 # Data
 vndb*.csv
 vndb*.sql

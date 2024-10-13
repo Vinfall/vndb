@@ -13,7 +13,7 @@ _CSV_FILE = "lengthvotes.csv"
 # Edited from first-fm
 def load_secrets():
     # Load secret credentials from local file
-    secrets_file = ".env"
+    secrets_file = ".env.local"
     if os.path.isfile(secrets_file):
         with open(secrets_file, "r", encoding="utf-8") as f:
             lines = f.readlines()
