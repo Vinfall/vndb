@@ -1,15 +1,14 @@
 SELECT vn.title,
-    vn.alias,
-    string_agg(distinct p.name, ', ') AS "Developer",
-    round(CAST(vote AS numeric) / 10, 1) AS "Vote",
-    u.vid,
+    replace(vn.alias, E'\n', ',') AS "alias",
+    string_agg(distinct p.name, ',') AS "developer",
+    round(CAST(vote AS numeric) / 10, 1) AS "vote",
     u.started,
     u.finished,
     CASE
         min(released) %100
         WHEN 99 THEN min(released) -98
         ELSE min(released)
-    END AS "Released",
+    END AS "released",
     -- deal with 99999901 stuff
     c_votecount AS "RatingDP",
     round(CAST(c_rating AS numeric) / 100, 2) AS "Rating",
