@@ -5,7 +5,6 @@ select vn.title,
     u.vid,
     u.started,
     u.finished,
-    round(avg(lv.length) / 60, 2) as "Length",
     case
         when min(released) % 100 = 99 then min(released) - 98
         else min(released)
@@ -25,8 +24,6 @@ from vndb.ulist_vns u
     left join releases_vn rvn on rvn.vid = vn.id
     left join releases r on r.id = rvn.id
     and rtype <> 'trial'
-    left join vn_length_votes lv on vn.id = lv.vid
-    and speed = 1
     left join releases_producers rp on r.id = rp.id
     left join producers p on rp.pid = p.id
 WHERE u.uid = { UID } --Change to your User ID
@@ -35,7 +32,6 @@ WHERE u.uid = { UID } --Change to your User ID
 group by vn.title,
     vn.alias,
     vote,
-    u.vid,
     u.vid,
     u.started,
     u.finished,
