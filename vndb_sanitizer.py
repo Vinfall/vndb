@@ -207,7 +207,8 @@ if len(file_list) > 0:
 else:
     print(
         "VNDB exported CSV not found.\n\
-Please install VNDB List Export and export first.\n\
-You can get it from https://github.com/Vinfall/UserScripts#list."
+Please export data first.\n\
+You can get it via VNDB Query or \
+VNDB List Export from https://github.com/Vinfall/UserScripts#list."
     )
     sys.exit()
