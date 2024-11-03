@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import glob
 import sys
 
 import pandas as pd
+
+# INPUT_PATH = "output/user-list.csv"
+INPUT_PATH = "output/monthly.csv"
+OUTPUT_PATH = "output/barchartrace.csv"
 
 
 # Modified from HLTB-Barchartrace.py
@@ -21,12 +24,12 @@ def calculate_number(dataframe):
     for _index, row in df_sorted.iterrows():
         # Get the current 'Date' and 'Labels' values
         current_date = row["Date"]
-        current_label = row["Labels"]
+        current_label = row["labels"]
 
         # Count occurrences of current label in rows with dates up to current date
         count = (
             df_sorted.loc[df_sorted["Date"] <= current_date]
-            .loc[df_sorted["Labels"] == current_label]
+            .loc[df_sorted["labels"] == current_label]
             .shape[0]
         )
 
@@ -36,8 +39,8 @@ def calculate_number(dataframe):
     # Add the 'Count' column to the DataFrame
     df_sorted["Count"] = count_value
 
-    # Create a new DataFrame with only the 'Date', 'Labels', and 'Count' columns
-    df_sorted = df_sorted[["Date", "Labels", "Count"]]
+    # Create a new DataFrame with only the 'Date', 'labels', and 'Count' columns
+    df_sorted = df_sorted[["Date", "labels", "Count"]]
 
     # Drop the duplicate rows
     df_sorted = df_sorted.drop_duplicates()
@@ -48,23 +51,23 @@ def calculate_number(dataframe):
     # Filter out rows where 'Date' is later than '2022-10-31'
     # df_sorted = df_sorted[df_sorted['Date'] <= '2022-10-31']
 
-    # Create a new DataFrame with all unique 'Date' and 'Labels' combinations
+    # Create a new DataFrame with all unique 'Date' and 'labels' combinations
     unique_dates = df_sorted["Date"].unique()
-    unique_platforms = df_sorted["Labels"].unique()
+    unique_platforms = df_sorted["labels"].unique()
     new_index = pd.MultiIndex.from_product(
-        [unique_dates, unique_platforms], names=["Date", "Labels"]
+        [unique_dates, unique_platforms], names=["Date", "labels"]
     )
-    # new_df = df_sorted.set_index(['Date', "Labels"]).reindex(new_index)
+    # new_df = df_sorted.set_index(['Date', "labels"]).reindex(new_index)
     new_df = pd.DataFrame(index=new_index).reset_index()
 
     # Merge the new DataFrame with the sorted DataFrame
-    merged_df = pd.merge(new_df, df_sorted, on=["Date", "Labels"], how="left")
+    merged_df = pd.merge(new_df, df_sorted, on=["Date", "labels"], how="left")
 
     # Forward fill the missing values within each group of same label
-    merged_df["Count"] = merged_df.groupby("Labels")["Count"].ffill()
+    merged_df["Count"] = merged_df.groupby("labels")["Count"].ffill()
 
     # Fill the first 'Count' value of every label with 0
-    merged_df["Count"] = merged_df.groupby("Labels")["Count"].transform(
+    merged_df["Count"] = merged_df.groupby("labels")["Count"].transform(
         lambda x: x.fillna(0)
     )
 
@@ -79,28 +82,25 @@ def format_barchartrace(dataframe, date_type):
     return df
 
 
-# Read CSV file
-file_list = glob.glob("vndb-list-export-*.csv")
-if len(file_list) > 0:
-    # Sanitize every file
-    for filepath in file_list:
-        new_file_name = filepath.replace("vndb-list-export-", "vndb-list-barchartrace-")
-        df_raw = pd.read_csv(filepath)
-        # Accepted vlaues: 'Start date', 'Finish date', 'Release date'
-        # Note: 'Finish date' does not work much, which is expected
-        #       since other labels would not exist if you finish it already
-        df_mod = format_barchartrace(df_raw, "Start date")
-        # Debug preview
-        print(df_mod.head())
-        # Export to CSV
-        df_mod.to_csv(new_file_name, index=False, quoting=1)
-else:
+try:
+    with open(INPUT_PATH, "r", encoding="utf-8") as f:
+        pass
+except FileNotFoundError:
     print(
         "VNDB exported CSV not found.\n\
-Please install VNDB List Export and export first.\n\
-You can get it from https://github.com/Vinfall/UserScripts#list."
+Please export data via VNDB Query first.\n\
+For details, see instructions in README."
     )
     sys.exit()
 
-# Seperate this to avoid message flooding in loops
+df_raw = pd.read_csv(INPUT_PATH)
+# Accepted vlaues: 'started', 'finished', 'released'
+# Note: 'finished' does not work much, which is expected
+#       since other labels would not exist if you finish it already
+df_mod = format_barchartrace(df_raw, "started")
+# Debug preview
+print(df_mod.head())
+# Export to CSV
+df_mod.to_csv(OUTPUT_PATH, index=False, quoting=1)
+# Message output
 print("Now drop output to https://fabdevgit.github.io/barchartrace")
