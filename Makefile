@@ -12,6 +12,7 @@ PACKAGES = tidyverse corrplot gridExtra
 SANITIZER = vndb_sanitizer.py
 BARCHART = vndb_barchartrace.py
 QUERY = vndb_query.py
+MINIMAL_QUERY = monthly_minimal.py
 PLOT = vndb-plot.r
 
 # Default target, run one by one
@@ -39,6 +40,10 @@ $(VENV):
 # Get data from VNDB query
 query:
 	$(PYTHON) $(QUERY)
+
+# Get minimal monthly list from query
+minimal:
+	$(PYTHON) $(MINIMAL_QUERY)
 
 # Sanitize data
 sanitize: $(SANITIZER)
