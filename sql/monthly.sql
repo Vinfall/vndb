@@ -1,6 +1,15 @@
-SELECT vn.title,
+SELECT round(CAST(vote AS numeric) / 10, 1) AS "vote",
+    round(CAST(c_rating AS numeric) / 100, 2) AS "rating",
+    c_votecount AS "ratingDP",
+    CASE
+        WHEN labels @> '{1}' THEN 'Playing' -- possible to have multiple labels
+        WHEN labels @> '{2}' THEN 'Finished'
+        WHEN labels @> '{3}' THEN 'Stalled'
+        WHEN labels @> '{4}' THEN 'Dropped'
+        WHEN labels @> '{5}' THEN 'Wishlist'
+    END AS "labels",
+    vn.title,
     string_agg(distinct p.name, ', ') AS "developer",
-    round(CAST(vote AS numeric) / 10, 1) AS "vote",
     u.started,
     u.finished,
     CASE
@@ -12,16 +21,7 @@ SELECT vn.title,
             TO_DATE(min(released)::text, 'YYYYMMDD'),
             'YYYY-MM-DD'
         ) -- convert to ISO date
-    END AS "released",
-    c_votecount AS "ratingDP",
-    round(CAST(c_rating AS numeric) / 100, 2) AS "rating",
-    CASE
-        WHEN labels @> '{1}' THEN 'Playing' -- possible to have multiple labels
-        WHEN labels @> '{2}' THEN 'Finished'
-        WHEN labels @> '{3}' THEN 'Stalled'
-        WHEN labels @> '{4}' THEN 'Dropped'
-        WHEN labels @> '{5}' THEN 'Wishlist'
-    END AS "labels"
+    END AS "released"
 FROM vndb.ulist_vns u
     JOIN vndb.vn vn ON u.vid = vn.id
     LEFT JOIN releases_vn rvn ON rvn.vid = vn.id
@@ -50,4 +50,7 @@ GROUP BY vn.title,
     c_votecount,
     c_rating,
     labels
-ORDER BY u.started DESC
+ORDER BY labels DESC,
+    -- finished > dropped
+    u.finished DESC,
+    u.started DESC
