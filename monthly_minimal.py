@@ -6,9 +6,9 @@ import sys
 
 import pandas as pd
 
-_input_path = "output/monthly.csv"
-_output_path = "output/monthly-minimal.csv"
-_query = "sql/monthly-minimal.sql"
+INPUT_PATH = "output/monthly.csv"
+OUTPUT_PATH = "output/monthly-minimal.csv"
+QUERY = "sql/monthly-minimal.sql"
 
 
 def get_last_month_dates():
@@ -45,11 +45,11 @@ def query_csv(input_csv, output_csv, sql_query):
 
 
 try:
-    with open(_input_path, "r") as f:
+    with open(INPUT_PATH, "r", encoding="utf-8") as f:
         pass  # 仅检查文件是否存在
 except FileNotFoundError:
     print("Monthly list not found. Export via VNDB Query first.")
     sys.exit()
 
 # 调用查询函数
-query_csv(_input_path, _output_path, _query)
+query_csv(INPUT_PATH, OUTPUT_PATH, QUERY)
