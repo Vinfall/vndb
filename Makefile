@@ -9,7 +9,6 @@ R = Rscript
 # Dependencies & scripts
 REQUIREMENTS = requirements.txt
 PACKAGES = tidyverse corrplot gridExtra
-SANITIZER = vndb_sanitizer.py
 BARCHART = vndb_barchartrace.py
 QUERY = vndb_query.py
 MINIMAL_QUERY = monthly_minimal.py
@@ -19,12 +18,12 @@ PLOT = vndb-plot.r
 all:
 	$(MAKE) install
 	$(MAKE) clean
-	$(MAKE) sanitize
+	$(MAKE) barchart
 	$(MAKE) plot
 
 run:
 	$(MAKE) clean
-	$(MAKE) sanitize
+	$(MAKE) barchart
 	$(MAKE) plot
 
 # Install dependencies for Python and R
@@ -45,9 +44,8 @@ query:
 minimal:
 	$(PYTHON) $(MINIMAL_QUERY)
 
-# Sanitize data
-sanitize: $(SANITIZER)
-	$(PYTHON) $(SANITIZER)
+# Format data to bar chart race style
+barchart:
 	$(PYTHON) $(BARCHART)
 
 # Generate plots
@@ -57,5 +55,5 @@ plot: $(BARCHART) $(PLOT)
 
 # Clean up outputs
 clean:
-	-rm vndb-*-sanitized-*.csv vndb-list-barchartrace-*.csv vndb-ulist-monthly-*.csv Rplots.pdf
-	-rm output/*.png output/*.json output/*.csv
+	-rm vndb-list-barchartrace-*.csv  Rplots.pdf
+	-rm output/*.png output/*.json output/monthly-minimal.csv
