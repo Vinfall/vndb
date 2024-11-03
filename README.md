@@ -25,7 +25,7 @@ First, you need to export your VNDB VN/length vote list with [queries in /sql](/
 2. Paste the query on [VNDB Query](https://query.vndb.org), change things like `UID`, just see query comments
 3. Click `Run`
 4. `Export` > `CSV`
-5. Place the exported CSV in the top directory
+5. Place the exported CSV in [output](output/) directory
 
 > [!NOTE]
 > If you ever export your data on VNDB, the vanilla `XML` format sadly will NOT work (as I'm lazy to write/find a parser).
