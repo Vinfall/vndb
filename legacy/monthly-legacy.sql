@@ -1,0 +1,1 @@
+../sql/monthly-legacy.sql

@@ -9,9 +9,8 @@ R = Rscript
 # Dependencies & scripts
 REQUIREMENTS = requirements.txt
 PACKAGES = tidyverse corrplot gridExtra
-SANITIZER = vndb_sanitizer.py
-BARCHART = vndb_barchartrace.py
-QUERY = vndb_query.py
+SANITIZER = vndb_sanitizer_legacy.py
+BARCHART = vndb_barchartrace_legacy.py
 PLOT = vndb-plot.r
 
 # Default target, run one by one
@@ -36,14 +35,14 @@ $(VENV):
 	source $(VENV)/bin/activate; \
 	$(PIP) install -r $(REQUIREMENTS)
 
-# Get data from VNDB query
-query:
-	$(PYTHON) $(QUERY)
-
 # Sanitize data
 sanitize: $(SANITIZER)
 	$(PYTHON) $(SANITIZER)
 	$(PYTHON) $(BARCHART)
+
+# Get monthly list
+monthly: $(SANITIZER)
+	${PYTHON} monthly_legacy.py
 
 # Generate plots
 plot: $(BARCHART) $(PLOT)
