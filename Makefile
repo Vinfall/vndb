@@ -57,3 +57,9 @@ plot: $(BARCHART) $(PLOT)
 clean:
 	-rm vndb-list-barchartrace-*.csv  Rplots.pdf
 	-rm output/*.png output/*.json output/monthly-minimal.csv
+
+uninstall:
+	@echo "Cleaning up..."
+	@deactivate || true
+	rm -rf $(VENV)
+	pip cache purge || true
