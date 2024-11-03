@@ -48,6 +48,7 @@ Just check `output` or console log for the results.
 
 To clean up the data, run `make clean`.
 Previous results are cleaned before restart though.
+Similarly, run `make uninstall` to uninstall dependencies.
 
 ***
 
