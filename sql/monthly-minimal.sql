@@ -2,8 +2,14 @@ SELECT vote,
     title,
     developer,
     released
-FROM "Monthly"
-ORDER BY "vote" DESC,
-    "released" DESC,
-    -- the newer, the better...
-    "title" ASC;
+FROM (
+        SELECT *,
+            ROW_NUMBER() OVER (
+                ORDER BY labels DESC,
+                    finished DESC,
+                    started DESC
+            ) AS original_order
+        FROM "Monthly"
+    ) AS RankedResults
+ORDER BY vote DESC,
+    original_order;
