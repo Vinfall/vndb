@@ -1,5 +1,4 @@
 SELECT vn.title,
-    replace(vn.alias, E'\n', ',') AS "alias",
     string_agg(distinct p.name, ',') AS "developer",
     round(CAST(vote AS numeric) / 10, 1) AS "vote",
     u.started,
@@ -30,7 +29,6 @@ WHERE u.uid = { UID } -- change to your User ID
     -- and vote is not null  -- voted VN only
     AND NOT labels @> '{5}' -- exclude wishlist
 GROUP BY vn.title,
-    vn.alias,
     vote,
     u.vid,
     u.started,
@@ -38,3 +36,4 @@ GROUP BY vn.title,
     c_votecount,
     c_rating,
     labels
+ORDER BY u.started DESC
