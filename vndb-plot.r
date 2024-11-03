@@ -11,24 +11,26 @@ library(lubridate)
 library(corrplot)
 
 # Get all files matching the pattern
-files <- list.files(pattern = "vndb-list-sanitized-.*\\.csv")
+# file_path <- "output/monthly.csv" # nolint: commented_code_linter.
+file_path <- "output/user-list.csv"
 
-# Check if any files were found
-if (length(files) == 0) {
-  stop("VNDB sanitized CSV not found.\n
-    Please run vndb_sanitizer.py first.")
+# If file does not exist
+if (!file.exists(file_path)) {
+  stop("VNDB exported CSV not found.\n
+    Please export data via VNDB Query first.\n
+    For details, see instructions in README.")
 }
 
 # Read the first matching file into a data frame with UTF-8 encoding
-data <- read_csv(files[1],
+data <- read_csv(file_path,
   locale = locale(encoding = "UTF-8"),
-  # Surpress excessive output
+  # Suppress excessive output
   show_col_types = FALSE
 )
 
 # Convert score to numeric
-data$Vote <- as.numeric(data$Vote)
-data$Rating <- as.numeric(data$Rating)
+data$vote <- as.numeric(data$vote)
+data$rating <- as.numeric(data$rating)
 # Convert Length string like 12:34 (hh:mm) into float
 data <- data %>%
   mutate(
