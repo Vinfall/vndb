@@ -1,6 +1,6 @@
 SELECT vn.title,
-    string_agg(distinct p.name, ', ') AS "Developer",
-    round(CAST(vote AS numeric) / 10, 1) AS "Vote",
+    string_agg(distinct p.name, ', ') AS "developer",
+    round(CAST(vote AS numeric) / 10, 1) AS "vote",
     u.started,
     u.finished,
     CASE
@@ -12,16 +12,16 @@ SELECT vn.title,
             TO_DATE(min(released)::text, 'YYYYMMDD'),
             'YYYY-MM-DD'
         ) -- convert to ISO date
-    END AS "Released",
-    c_votecount AS "RatingDP",
-    round(CAST(c_rating AS numeric) / 100, 2) AS "Rating",
+    END AS "released",
+    c_votecount AS "ratingDP",
+    round(CAST(c_rating AS numeric) / 100, 2) AS "rating",
     CASE
         WHEN labels @> '{1}' THEN 'Playing' -- possible to have multiple labels
         WHEN labels @> '{2}' THEN 'Finished'
         WHEN labels @> '{3}' THEN 'Stalled'
         WHEN labels @> '{4}' THEN 'Dropped'
         WHEN labels @> '{5}' THEN 'Wishlist'
-    END AS "Labels"
+    END AS "labels"
 FROM vndb.ulist_vns u
     JOIN vndb.vn vn ON u.vid = vn.id
     LEFT JOIN releases_vn rvn ON rvn.vid = vn.id
@@ -33,12 +33,12 @@ WHERE u.uid = { UID } -- change to your User ID
     -- and vote is not null  -- voted VN only
     AND NOT labels @> '{5}' -- exclude wishlist
     AND (
-        u.finished BETWEEN '2024-09-01' AND '2024-09-30' -- finished this month
+        u.finished BETWEEN '2024-10-01' AND '2024-10-31' -- finished this month
         OR (
             u.finished IS NULL
-            AND NOT u.started > '2024-09-30' -- WIP/Dropped/Stalled
+            AND NOT u.started > '2024-10-31' -- WIP/Dropped/Stalled
             AND NOT (
-                u.started < '2024-09-01' -- excluded earlier VNs
+                u.started < '2024-10-01' -- excluded earlier VNs
                 AND NOT labels @> '{1}'
             )
         )

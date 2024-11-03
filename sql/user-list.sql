@@ -9,15 +9,15 @@ SELECT vn.title,
         ELSE min(released)
     END AS "released",
     -- deal with 99999901 stuff
-    c_votecount AS "RatingDP",
-    round(CAST(c_rating AS numeric) / 100, 2) AS "Rating",
+    c_votecount AS "ratingDP",
+    round(CAST(c_rating AS numeric) / 100, 2) AS "rating",
     CASE
         WHEN labels @> '{1}' THEN 'Playing' -- possible to have multiple labels
         WHEN labels @> '{2}' THEN 'Finished'
         WHEN labels @> '{3}' THEN 'Stalled'
         WHEN labels @> '{4}' THEN 'Dropped'
         WHEN labels @> '{5}' THEN 'Wishlist'
-    END AS "Labels"
+    END AS "labels"
 FROM vndb.ulist_vns u
     JOIN vndb.vn vn ON u.vid = vn.id
     LEFT JOIN releases_vn rvn ON rvn.vid = vn.id
