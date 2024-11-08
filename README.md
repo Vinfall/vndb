@@ -44,7 +44,7 @@ Everything should be done now.
 Just check `output` or console log for the results.
 
 > [!TIP]
-> To get a list of available commands, run `make help`.
+> To get a list of available commands, run `make help` (only available on Linux, other commands are system agnostic though).
 
 To clean up the data, run `make clean`.
 Previous results are cleaned before restart though.
