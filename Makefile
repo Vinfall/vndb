@@ -26,8 +26,7 @@ run:
 	$(MAKE) barchart
 	$(MAKE) plot
 
-# Install dependencies for Python and R
-install: $(VENV) $(PACKAGES)
+install: $(VENV) $(PACKAGES) ## Install dependencies for Python and R
 	$(PIP) install -r $(REQUIREMENTS)
 	$(R) -e "install.packages(c('$(PACKAGES)'), repos = 'https://cran.rstudio.com/')"
 
@@ -36,30 +35,31 @@ $(VENV):
 	source $(VENV)/bin/activate; \
 	$(PIP) install -r $(REQUIREMENTS)
 
-# Get data from VNDB query
-query:
+query: ## Get data from VNDB query (private)
 	$(PYTHON) $(QUERY)
 
-# Get minimal monthly list from query
-minimal:
+minimal: ## Get minimal monthly list from query
 	$(PYTHON) $(MINIMAL_QUERY)
 
-# Format data to bar chart race style
-barchart:
+barchart: ## Format data to bar chart race style
 	$(PYTHON) $(BARCHART)
 
-# Generate plots
-plot: $(BARCHART) $(PLOT)
+plot: $(BARCHART) $(PLOT) ## Generate plots
 	$(R) $(PLOT)
 	-rm Rplots.pdf
 
-# Clean up outputs
-clean:
-	-rm vndb-list-barchartrace-*.csv  Rplots.pdf
+clean: ## Clean up outputs (queries are preserved)
+	-rm vndb-list-barchartrace-*.csv Rplots.pdf
 	-rm output/*.png output/*.json output/monthly-minimal.csv
 
-uninstall:
+uninstall: ## Uninstall dependencies
 	@echo "Cleaning up..."
 	@deactivate || true
 	rm -rf $(VENV)
 	pip cache purge || true
+
+help: ## Show this help
+	@echo "Specify a command:"
+	@grep -E '^[0-9a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[0;36m%-12s\033[m %s\n", $$1, $$2}'
+	@echo ""
+.PHONY: help

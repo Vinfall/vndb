@@ -44,7 +44,7 @@ Everything should be done now.
 Just check `output` or console log for the results.
 
 > [!TIP]
-> If you prefer to manage dependencies yourself, see **Vanilla way** below.
+> To get a list of available commands, run `make help`.
 
 To clean up the data, run `make clean`.
 Previous results are cleaned before restart though.
