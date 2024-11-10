@@ -1,6 +1,6 @@
 [project]
 name = "vndb"
-description = "VNDB Novel Data Breakup*"
+description = "VNDB Novel Data Breakup"
 keywords = ["data-visualization", "vndb", "visual-novel", "game", "galgame"]
 requires-python = ">=3.12"
 authors = [{ name = "Vinfall" }]
