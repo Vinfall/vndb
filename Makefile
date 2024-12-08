@@ -35,21 +35,25 @@ $(VENV):
 	source $(VENV)/bin/activate; \
 	$(PIP) install -r $(REQUIREMENTS)
 
-query: ## get data from VNDB query (private)
+query: gc # get data from VNDB query (private)
 	$(PYTHON) $(QUERY)
 
-minimal: ## generate minimal monthly playlist
+minimal: clean ## generate minimal monthly playlist
 	$(PYTHON) $(MINIMAL_QUERY)
 
-barchart: ## format data to bar chart race style
+barchart: clean ## format data to bar chart race style
 	$(PYTHON) $(BARCHART)
 
 plot: $(BARCHART) $(PLOT) ## generate plots
 	$(R) $(PLOT)
 	-rm Rplots.pdf
 
+# hidden full clean command
+gc: clean
+	- rm output/*.csv
+
 clean: ## clean up outputs (queries are preserved)
-	-rm vndb-list-barchartrace-*.csv Rplots.pdf
+	-rm output/barchartrace.csv Rplots.pdf
 	-rm output/*.png output/*.json output/monthly-minimal.csv
 
 uninstall: ## uninstall dependencies
