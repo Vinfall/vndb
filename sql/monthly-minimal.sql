@@ -1,4 +1,7 @@
-SELECT vote,
+SELECT CASE
+        WHEN vote LIKE '%.0' THEN CAST(REPLACE(vote, '.0', '') AS INTEGER)
+        ELSE CAST(vote AS REAL)
+    END AS vote,
     title,
     developer,
     released
