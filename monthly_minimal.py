@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import csv
 import sqlite3
 import sys
-
-import pandas as pd
 
 INPUT_PATH = "output/monthly.csv"
 OUTPUT_PATH = "output/monthly-minimal.csv"
@@ -18,11 +17,26 @@ def query_csv(input_csv, output_csv, sql_query):
 
     # Create a memory SQLite DB
     conn = sqlite3.connect(":memory:")
-    df = pd.read_csv(input_csv)
-    df.to_sql("Monthly", conn, index=False, if_exists="replace")
+    cursor = conn.cursor()
 
-    result_df = pd.read_sql_query(query, conn)
-    result_df.to_csv(output_csv, index=False)
+    # Read CSV and create table
+    with open(input_csv, "r", encoding="utf-8") as csvfile:
+        reader = csv.reader(csvfile)
+        headers = next(reader)
+        cursor.execute(f"CREATE TABLE Monthly ({', '.join(headers)})")
+        cursor.executemany(
+            # trunk-ignore(bandit/B608): intended SQL injection
+            f"INSERT INTO Monthly VALUES ({', '.join(['?']*len(headers))})",
+            reader,
+        )
+
+    cursor.execute(query)
+    results = cursor.fetchall()
+
+    with open(output_csv, "w", encoding="utf-8", newline="") as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow([description[0] for description in cursor.description])
+        writer.writerows(results)
 
     conn.close()
 
