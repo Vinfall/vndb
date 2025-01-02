@@ -24,9 +24,9 @@ def load_secrets():
     return doc
 
 
-def get_data(id, output):
+def get_data(query_id, output):
     # Get query results
-    url = "https://query.vndb.org/" + id + ".csv"
+    url = "https://query.vndb.org/" + query_id + ".csv"
     # trunk-ignore(bandit/B310)
     with urllib.request.urlopen(url, timeout=30) as response:
         data = response.read().decode("utf-8").splitlines()
