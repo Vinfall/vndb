@@ -28,12 +28,12 @@ WHERE u.uid = { UID } -- change to your User ID
     -- and vote is not null  -- voted VN only
     AND NOT labels @> '{5}' -- exclude wishlist
     AND (
-        u.finished BETWEEN '2024-12-01' AND '2024-12-31' -- finished this month
+        u.finished BETWEEN '2025-01-01' AND '2025-01-31' -- finished this month
         OR (
             u.finished IS NULL
-            AND NOT u.started > '2024-12-31' -- WIP/Dropped/Stalled
+            AND NOT u.started > '2025-01-31' -- WIP/Dropped/Stalled
             AND NOT (
-                u.started < '2024-12-01' -- excluded earlier VNs
+                u.started < '2025-01-01' -- excluded earlier VNs
                 AND NOT labels @> '{1}'
             )
         )
