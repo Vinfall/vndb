@@ -25,8 +25,8 @@ run:
 	$(MAKE) barchart
 	$(MAKE) plot
 
-install: $(VENV) $(PACKAGES) ## install dependencies for Python (venv) and R
-	$(PIP) install -r $(REQUIREMENTS)
+install: $(VENV) $(PACKAGES) ## setup Python venv and install R packages
+	$(PIP) install .
 	$(R) -e "install.packages(c('$(PACKAGES)'), repos = 'https://cran.rstudio.com/')"
 
 $(VENV):
