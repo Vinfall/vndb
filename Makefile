@@ -7,7 +7,6 @@ PIP = pip
 R = Rscript
 
 # Dependencies & scripts
-REQUIREMENTS = requirements.txt
 PACKAGES = tidyverse corrplot gridExtra
 BARCHART = vndb_barchartrace.py
 QUERY = vndb_query.py
@@ -31,9 +30,10 @@ install: $(VENV) $(PACKAGES) ## install dependencies for Python (venv) and R
 	$(R) -e "install.packages(c('$(PACKAGES)'), repos = 'https://cran.rstudio.com/')"
 
 $(VENV):
-	virtualenv $(VENV)
+	@echo "Setting up venv..."
+	${PYTHON} -m venv $(VENV)
 	source $(VENV)/bin/activate; \
-	$(PIP) install -r $(REQUIREMENTS)
+	$(PIP) install .
 
 query: gc # get data from VNDB query (private)
 	$(PYTHON) $(QUERY)
@@ -56,11 +56,10 @@ clean: ## clean up outputs (queries are preserved)
 	-rm output/barchartrace.csv Rplots.pdf
 	-rm output/*.png output/*.json output/monthly-minimal.csv
 
-uninstall: ## uninstall dependencies
+uninstall: ## uninstall venv
 	@echo "Cleaning up..."
 	@deactivate || true
 	rm -rf $(VENV)
-	pip cache purge || true
 
 help: ## show this help
 	@echo "Specify a command:"

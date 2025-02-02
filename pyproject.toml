@@ -4,25 +4,22 @@ description = "VNDB Novel Data Breakup"
 keywords = ["data-visualization", "vndb", "visual-novel", "game", "galgame"]
 requires-python = ">=3.12"
 authors = [{ name = "Vinfall" }]
-readme = "README.md"
+readme = { file = "README.md", content-type = "text/markdown" }
 license = { file = "LICENSE" }
 classifiers = [
-    "Programming Language :: Python :: 3",
-    "License :: Other/Proprietary License",
-    "Operating System :: OS Independent",
-    "Topic :: Games/Entertainment",
-    "Topic :: Scientific/Engineering :: Visualization",
-    "Private :: Do Not Upload",
+  "Programming Language :: Python :: 3",
+  "License :: Other/Proprietary License",
+  "Operating System :: OS Independent",
+  "Topic :: Games/Entertainment",
+  "Topic :: Scientific/Engineering :: Visualization",
+  "Private :: Do Not Upload",
 ]
+dependencies = ["pandas>=2.2.3", "numpy"]
 
 [project.urls]
-Homepage = "https://github.com/Vinfall/vndb"
+homepage = "https://github.com/Vinfall/vndb"
+source = "https://github.com/Vinfall/vndb"
 
 # Linter
 [tool.pylint]
-disable = [
-    "missing-module-docstring",
-    "missing-function-docstring",
-    "no-else-return",
-    "no-else-break",
-]
+disable = ["missing-module-docstring", "missing-function-docstring", "no-else-return", "no-else-break"]

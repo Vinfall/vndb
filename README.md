@@ -34,7 +34,7 @@ First, you need to export your VNDB VN/length vote list with [queries in /sql](/
 
 ## Usage
 
-Tested with Python 3.12 & R 4.4 on Void Linux.
+Tested with Python 3.13 & R 4.4 on GNU/Linux.
 
 ### Easy way
 
@@ -58,7 +58,7 @@ Similarly, run `make uninstall` to uninstall dependencies.
 
 ```python
 # Python
-pip install -r requirements.txt
+pip install .
 ```
 
 ```r
