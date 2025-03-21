@@ -20,6 +20,39 @@ dependencies = ["pandas>=2.2.3", "numpy"]
 homepage = "https://github.com/Vinfall/vndb"
 source = "https://github.com/Vinfall/vndb"
 
-# Linter
-[tool.pylint]
-disable = ["missing-module-docstring", "missing-function-docstring", "no-else-return", "no-else-break"]
+[tool.ruff]
+# force-exclude = true
+unsafe-fixes = true
+
+# https://docs.astral.sh/ruff/rules/
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+  "E501", # EditorConfig
+  "COM", # commas
+  "D1", # docstring
+  "D212",
+  "D203", # prefer D211
+  "ERA", # commented-out-code
+  "FIX", # fixme
+  "TD002", # todo
+  "TD003",
+  "PLR2004", # magic-value-comparison
+  "PTH", # flake8-use-pathlib: slower than os
+  "RET505", # superfluous-else-return
+  "T20", # print
+  # project-specific
+  "ANN",
+]
+# unfixable = ["F401"]
+
+[[tool.mypy.overrides]]
+module = ["pandas.*", "plotly.*"]
+ignore_missing_imports = true
+
+[tool.sqlfluff.core]
+dialect = "postgres"
+ignore = ["lexing"]
+
+[tool.sqlfluff.rules.references]
+special_chars.allow_space_in_identifier = true # "Release date"
