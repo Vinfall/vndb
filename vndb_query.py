@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 import csv
 import os
@@ -14,7 +13,7 @@ def load_secrets():
     # Load secret credentials from local file
     secrets_file = ".env.local"
     if os.path.isfile(secrets_file):
-        with open(secrets_file, "r", encoding="utf-8") as f:
+        with open(secrets_file, encoding="utf-8") as f:
             lines = f.readlines()
             doc = {}
             for line in lines:
@@ -27,8 +26,7 @@ def load_secrets():
 def get_data(query_id, output):
     # Get query results
     url = "https://query.vndb.org/" + query_id + ".csv"
-    # trunk-ignore(bandit/B310)
-    with urllib.request.urlopen(url, timeout=30) as response:
+    with urllib.request.urlopen(url, timeout=30) as response:  # noqa: S310
         data = response.read().decode("utf-8").splitlines()
 
     os.makedirs(_OUTPUT_FOLDER, exist_ok=True)

@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 import sys
 
@@ -76,14 +75,13 @@ def calculate_number(dataframe):
 
 def format_barchartrace(dataframe, date_type):
     # Rename date_type column to "Date"
-    dataframe.rename(columns={date_type: "Date"}, inplace=True)
+    dataframe = dataframe.rename(columns={date_type: "Date"})
     # Calculate Count of platforms at a specific date
-    df = calculate_number(dataframe)
-    return df
+    return calculate_number(dataframe)
 
 
 try:
-    with open(INPUT_PATH, "r", encoding="utf-8") as f:
+    with open(INPUT_PATH, encoding="utf-8") as f:
         pass
 except FileNotFoundError:
     print(

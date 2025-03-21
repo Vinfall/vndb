@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 import csv
 import sqlite3
@@ -12,7 +11,7 @@ QUERY = "sql/monthly-minimal.sql"
 
 def query_csv(input_csv, output_csv, sql_query):
     # Read query from file
-    with open(sql_query, "r", encoding="utf-8") as file:
+    with open(sql_query, encoding="utf-8") as file:
         query = file.read()
 
     # Create a memory SQLite DB
@@ -20,13 +19,12 @@ def query_csv(input_csv, output_csv, sql_query):
     cursor = conn.cursor()
 
     # Read CSV and create table
-    with open(input_csv, "r", encoding="utf-8") as csvfile:
+    with open(input_csv, encoding="utf-8") as csvfile:
         reader = csv.reader(csvfile)
         headers = next(reader)
         cursor.execute(f"CREATE TABLE Monthly ({', '.join(headers)})")
         cursor.executemany(
-            # trunk-ignore(bandit/B608): intended SQL injection
-            f"INSERT INTO Monthly VALUES ({', '.join(['?']*len(headers))})",
+            f"INSERT INTO Monthly VALUES ({', '.join(['?'] * len(headers))})",  # noqa: S608, intended SQL injection
             reader,
         )
 
@@ -42,7 +40,7 @@ def query_csv(input_csv, output_csv, sql_query):
 
 
 try:
-    with open(INPUT_PATH, "r", encoding="utf-8") as f:
+    with open(INPUT_PATH, encoding="utf-8") as f:
         pass  # Check if file exist
 except FileNotFoundError:
     print("Monthly list not found. Export via VNDB Query first.")
