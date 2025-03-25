@@ -25,8 +25,7 @@ run:
 	$(MAKE) sanitize
 	$(MAKE) plot
 
-# Install dependencies for Python and R
-install: $(VENV) $(PACKAGES)
+install: $(VENV) $(PACKAGES) ## install dependencies for Python and R
 	$(PIP) install -r $(REQUIREMENTS)
 	$(R) -e "install.packages(c('$(PACKAGES)'), repos = 'https://cran.rstudio.com/')"
 
@@ -35,21 +34,23 @@ $(VENV):
 	source $(VENV)/bin/activate; \
 	$(PIP) install -r $(REQUIREMENTS)
 
-# Sanitize data
-sanitize: $(SANITIZER)
+sanitize: $(SANITIZER) ## sanitize data
 	$(PYTHON) $(SANITIZER)
 	$(PYTHON) $(BARCHART)
 
-# Get monthly list
-monthly: $(SANITIZER)
+monthly: $(SANITIZER) ## get monthly list
 	${PYTHON} monthly_legacy.py
 
-# Generate plots
-plot: $(BARCHART) $(PLOT)
+plot: $(BARCHART) $(PLOT) ## generate plots
 	$(R) $(PLOT)
 	-rm Rplots.pdf
 
-# Clean up outputs
-clean:
+clean: ## clean outputs
 	-rm vndb-*-sanitized-*.csv vndb-list-barchartrace-*.csv vndb-ulist-monthly-*.csv Rplots.pdf
 	-rm output/*.png output/*.json output/*.csv
+
+help: ## show this help
+	@echo "Specify a command:"
+	@grep -E '^[0-9a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[0;36m%-12s\033[m %s\n", $$1, $$2}'
+	@echo ""
+.PHONY: help
