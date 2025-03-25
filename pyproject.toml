@@ -40,9 +40,12 @@ ignore = [
   "PLR2004", # magic-value-comparison
   "PTH", # flake8-use-pathlib: slower than os
   "RET505", # superfluous-else-return
+  "RET508", # superfluous-else-break
   "T20", # print
   # project-specific
   "ANN",
+  "PD901",
+  "PD008",
 ]
 # unfixable = ["F401"]
 
