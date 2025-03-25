@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 import glob
 import sys
@@ -73,10 +72,9 @@ def calculate_number(dataframe):
 
 def format_barchartrace(dataframe, date_type):
     # Rename date_type column to "Date"
-    dataframe.rename(columns={date_type: "Date"}, inplace=True)
+    dataframe = dataframe.rename(columns={date_type: "Date"})
     # Calculate Count of platforms at a specific date
-    df = calculate_number(dataframe)
-    return df
+    return calculate_number(dataframe)
 
 
 # Read CSV file

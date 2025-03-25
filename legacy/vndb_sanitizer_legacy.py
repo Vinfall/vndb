@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 import glob
 import re
@@ -38,7 +37,7 @@ _TO_REPLACE_DEV = (
     # ("キッド", "KID"),
     ("コナミ", "KONAMI"),
     ("まどそふと", "Madosoft"),
-    ("ま～まれぇど", "Marmalade"),
+    ("ま～まれぇど", "Marmalade"),  # noqa: RUF001
     ("ナナウィンド", "NanaWind"),
     ("ぱれっと", "Palette"),
     ("レジスタ", "Regista"),
@@ -80,16 +79,15 @@ def convert_to_time_string(length_str):
     if minute_match:
         minutes = int(minute_match.group(1))
     # Convert hours and minutes to time string
-    time_str = f"{hours:02d}:{minutes:02d}"
-    return time_str
+    return f"{hours:02d}:{minutes:02d}"
 
 
 # Split Length and LengthDP like `18h (9)`, also works for length votes
-def split_length(df, is_lengthvotes):
+def split_length(df, is_lengthvotes):  # noqa: C901, PLR0912
     # Initialize length votes dataframe to avoid KeyError
     if is_lengthvotes:
         # Rename the "Time" column to "Length"
-        df.rename(columns={"Time": "Length"}, inplace=True)
+        df = df.rename(columns={"Time": "Length"})
     # Loop through each row
     for index, row in df.iterrows():
         if not is_lengthvotes:
@@ -134,9 +132,7 @@ def split_length(df, is_lengthvotes):
                             df.at[index, "LengthDP"] = int(match.group(2))
 
     # Apply the replacement function
-    df = df.apply(replace_length, axis=1)
-
-    return df
+    return df.apply(replace_length, axis=1)
 
 
 # Make already nicely exported CSV more awesome
@@ -152,7 +148,7 @@ def sanitized_dataframe(df):
     df = split_length(df, is_lengthvotes)
 
     # Replace "-" (implying null vote/speed) with NaN
-    df.replace("-", np.nan, inplace=True)
+    df = df.replace("-", np.nan)
 
     # Exclude blacklisted games
     # df = df[df["Blacklisted"] != "✓"]
