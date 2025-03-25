@@ -213,6 +213,6 @@ else:
         "VNDB exported CSV not found.\n\
 Please export data first.\n\
 You can get it via VNDB Query or \
-VNDB List Export from https://github.com/Vinfall/UserScripts#list."
+VNDB List Export from https://github.com/Vinfall/UserScripts#vndb-list-export."
     )
     sys.exit()

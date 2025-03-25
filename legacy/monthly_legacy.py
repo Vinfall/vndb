@@ -50,5 +50,5 @@ if len(file_list) > 0:
         new_file_name = filepath.replace("vndb-list-sanitized-", "vndb-ulist-monthly-")
         query_csv(filepath, new_file_name, "monthly-legacy.sql")
 else:
-    print("Sanitized CSV not found. Run `python vndb_sanitizer.py` first.")
+    print("Sanitized CSV not found. Run `python vndb_sanitizer_legacy.py` first.")
     sys.exit()

@@ -96,7 +96,7 @@ else:
     print(
         "VNDB exported CSV not found.\n\
 Please install VNDB List Export and export first.\n\
-You can get it from https://github.com/Vinfall/UserScripts#list."
+You can get it from https://github.com/Vinfall/UserScripts#vndb-list-export."
     )
     sys.exit()
 
