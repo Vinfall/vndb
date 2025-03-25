@@ -60,7 +60,7 @@ def calculate_number(dataframe):
     new_df = pd.DataFrame(index=new_index).reset_index()
 
     # Merge the new DataFrame with the sorted DataFrame
-    merged_df = pd.merge(new_df, df_sorted, on=["Date", "labels"], how="left")
+    merged_df = pd.merge(new_df, df_sorted, on=["Date", "labels"], how="left")  # noqa: PD015
 
     # Forward fill the missing values within each group of same label
     merged_df["Count"] = merged_df.groupby("labels")["Count"].ffill()
