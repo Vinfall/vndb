@@ -1,26 +1,24 @@
 # VNDB
 
+> [!WARNING]
+> Deprecated! I no longer have the interest to maintain this.
+> If you wanna try it anyway, the combination of VNDB List Export + [legacy](/legacy/) is more likely to work.
+
 ## Intro
 
 VNDB, is an acronym of *VNDB Novel Data Breakup*, which is also the abbreviation of *Visual Novel DataBase*.
 
 It contains the companion scripts for [VNDB Query](https://query.vndb.org/about) for my personal use.
 
-I used VNDB List Export in the past but eventually switched to VNDB Query
-as PostgreSQL seems more robust than Pandas to me now.
-
-With this, you can get the data with just a single UID (provided the list is not private).
-No more hastle of jumping through pages.
-
-> [!TIP]
-> A downside of query is it's synced with VNDB's public dump daily at 8:30 UTC, so it may take up to 24 hours (+ ~30 minutes) for changes to the main database to show up in query results.
-
-This is usually not a problem as I can't see why someone would use it on a daily basis.
-~~Even on that case, you can just append the missing data yourself...~~
+I use VNDB List Export and
+~~but eventually switched to VNDB Query as SQL seems more robust than Pandas to me~~
+switched back from VNDB Query due to localization.
 
 ## Query
 
-First, you need to export your VNDB VN/length vote list with [queries in /sql](/sql/):
+First, you need to export your VNDB VN/length vote list with VNDB List Export (docs included) or [queries in /sql](/sql/).
+
+If you choose to export via VNDB Query:
 1. Choose the query you need, usually it's [monthly.sql](sql/monthly.sql) (if you want a complete list, use [user-list.sql](sql/user-list.sql) instead) or [lengthvotes.sql](sql/lengthvotes.sql)
 2. Paste the query on [VNDB Query](https://query.vndb.org), change things like `UID`, just see query comments
 3. Click `Run`
@@ -30,11 +28,12 @@ First, you need to export your VNDB VN/length vote list with [queries in /sql](/
 > [!NOTE]
 > If you ever export your data on VNDB, the vanilla `XML` format sadly will NOT work (as I'm lazy to write/find a parser).
 >
-> You can also use [the counterfeit example](example/) to take a look at the results.
+> By the way, you can also use [the counterfeit example](example/) to take a look at the results.
 
 ## Usage
 
-Tested with Python 3.13 & R 4.4 on GNU/Linux.
+[Legacy](/legacy/) is tested with Python 3.13 & R 4.4 on GNU/Linux, I have not adapted VNDB Query format yet.
+As I moved back to VNDB List Export, this is unlikely to happen.
 
 ### Easy way
 
@@ -56,31 +55,27 @@ Similarly, run `make uninstall` to uninstall dependencies.
 
 1. Install Python, R & respective dependencies:
 
-```python
-# Python
-pip install .
-```
+    ```python
+    # Python
+    pip install .
+    ```
 
-```r
-# R
-install.packages("tidyverse")
-install.packages("corrplot")
-install.packages("gridExtra")
-```
+    ```r
+    # R
+    install.packages("tidyverse")
+    install.packages("corrplot")
+    install.packages("gridExtra")
+    ```
 
 2. Now run the sanitizer and plot generator:
 
-```sh
-python ./vndb_sanitizer.py
-python ./vndb_barchartrace.py
-Rscript ./vndb-plot.r
-```
+    ```sh
+    python ./vndb_sanitizer.py
+    python ./vndb_barchartrace.py
+    Rscript ./vndb-plot.r
+    ```
 
 3. Check `output` or console log for the ugly (toldya) plots.
-
-### Legacy way
-
-If you still prefer legacy way with VNDB List Export (for more robust multi-language support), you can use the scripts in [legacy](/legacy/), the code may or may not work. Anyway, that's why it's called *legacy*. There is also no intro about it, good luck with that😉
 
 ## [License](LICENSE)
 
